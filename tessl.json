@@ -1,0 +1,24 @@
+{
+  "name": "notasegura",
+  "mode": "vendored",
+  "dependencies": {
+    "ahgraber/skills": {
+      "version": "3dcef2385621094307e3d6a9f185656023c42c42",
+      "source": "https://github.com/ahgraber/skills",
+      "include": {
+        "skills": [
+          "sdd"
+        ]
+      }
+    },
+    "github/awesome-copilot": {
+      "version": "613efc8c21d9b3ce642dff361d17006cd9967e28",
+      "source": "https://github.com/github/awesome-copilot",
+      "include": {
+        "skills": [
+          "prd"
+        ]
+      }
+    }
+  }
+}

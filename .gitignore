@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+.next/
+out/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Misc
+*.tsbuildinfo
+
+# git backup
+*.git.bak/
+.git.bak/

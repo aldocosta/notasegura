@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #008254;
+  --color-primary-deep: #006642;
+  --color-forest: #00482f;
+  --color-on-primary: #ffffff;
+  --color-lime-hero: #9ae600;
+  --color-lime-panel: #e8fdac;
+  --color-lime-accent: #ddfa88;
+  --color-lime-ribbon: #a8ea4c;
+  --color-logo-lime: #8dc63f;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #f7f7f7;
+  --color-mint-50: #effcf8;
+  --color-mint-100: #e3faf2;
+  --color-mint-200: #b7ecda;
+  --color-hairline: #ebebec;
+  --color-hairline-strong: #d8d9da;
+  --color-ink: #000000;
+  --color-body: #3d4045;
+  --color-muted: #64666a;
+  --color-faint: #b1b3b5;
+  --color-link: #005fb9;
+  --color-info: #4b99e6;
+  --color-error: #de2828;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-primary-deep: var(--color-primary-deep);
+  --color-forest: var(--color-forest);
+  --color-on-primary: var(--color-on-primary);
+  --color-lime-hero: var(--color-lime-hero);
+  --color-lime-panel: var(--color-lime-panel);
+  --color-lime-accent: var(--color-lime-accent);
+  --color-lime-ribbon: var(--color-lime-ribbon);
+  --color-logo-lime: var(--color-logo-lime);
+  --color-canvas: var(--color-canvas);
+  --color-canvas-soft: var(--color-canvas-soft);
+  --color-mint-50: var(--color-mint-50);
+  --color-mint-100: var(--color-mint-100);
+  --color-mint-200: var(--color-mint-200);
+  --color-hairline: var(--color-hairline);
+  --color-hairline-strong: var(--color-hairline-strong);
+  --color-ink: var(--color-ink);
+  --color-body: var(--color-body);
+  --color-muted: var(--color-muted);
+  --color-faint: var(--color-faint);
+  --color-link: var(--color-link);
+  --color-info: var(--color-info);
+  --color-error: var(--color-error);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-body);
+  font-family: Arial, Helvetica, sans-serif;
+}

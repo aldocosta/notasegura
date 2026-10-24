@@ -1,0 +1,59 @@
+{
+  "name": "ahgraber/skills",
+  "version": "3dcef2385621094307e3d6a9f185656023c42c42",
+  "summary": "Auto-generated plugin from GitHub (45 skills)",
+  "private": true,
+  "skills": {
+    "sdd": {
+      "path": "skills/sdd/SKILL.md"
+    }
+  },
+  "excludes": {
+    "skills": [
+      "agent-bridge",
+      "alt-text",
+      "antislop-writing",
+      "api-design",
+      "brainstorming",
+      "changelog",
+      "code-review",
+      "commit-message",
+      "debugging",
+      "deep-research",
+      "editorial-review",
+      "formal-verification",
+      "grill-me",
+      "handoff",
+      "interactive-notebook-demo",
+      "mcp-research",
+      "optimize-skills",
+      "proof",
+      "python",
+      "python-notebooks-async",
+      "receiving-feedback",
+      "refactor",
+      "sdd-apply",
+      "sdd-archive",
+      "sdd-derive",
+      "sdd-explore",
+      "sdd-propose",
+      "sdd-sync",
+      "sdd-translate",
+      "sdd-verify",
+      "securing-code",
+      "security-deep-scan",
+      "security-fix-finding",
+      "security-scan",
+      "security-triage-finding",
+      "shell-scripts",
+      "show-me",
+      "simplify",
+      "strudel",
+      "subagent-patterns",
+      "synthesize",
+      "teach-me",
+      "writing-docstrings",
+      "writing-tests"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "4450db90-1939-4f95-98aa-50fdcec6484f",
+  "mode": "vendored",
+  "dependencies": {
+    "ahgraber/skills": {
+      "version": "3dcef2385621094307e3d6a9f185656023c42c42",
+      "source": "https://github.com/ahgraber/skills",
+      "include": {
+        "skills": [
+          "sdd"
+        ]
+      }
+    }
+  }
+}
