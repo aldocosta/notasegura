@@ -43,7 +43,7 @@ export default function Home() {
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-bold sm:text-4xl">Compartilhe textos sensíveis com segurança</h1>
           <p className="mt-3 text-sm opacity-90 sm:text-base">
-            Notas anônimas, criptografadas e autodestrutivas.
+            Notas anônimas, criptografadas e autodestrutivas. 100% gratuito.
           </p>
           <a
             href="#como-funciona"
@@ -137,7 +137,7 @@ export default function Home() {
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">2</span>
               <div>
                 <p className="font-semibold text-ink">Recebe um link</p>
-                <p className="text-muted">Exemplo: <code className="break-all text-primary">https://notasegura.app/n/abc123</code>. Compartilhe apenas com quem deve ver.</p>
+                <p className="text-muted">Exemplo: <span className="break-all text-primary">https://notasegura.app/n/abc123</span>. Compartilhe apenas com quem deve ver.</p>
               </div>
             </li>
             <li className="flex gap-3">
