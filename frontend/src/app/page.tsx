@@ -45,6 +45,16 @@ export default function Home() {
           <p className="mt-3 text-sm opacity-90 sm:text-base">
             Notas anônimas, criptografadas e autodestrutivas.
           </p>
+          <a
+            href="#como-funciona"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("como-funciona")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="mt-4 inline-block rounded bg-on-primary px-4 py-2 text-sm font-bold text-primary shadow hover:bg-white"
+          >
+            Como Funciona!
+          </a>
         </div>
       </section>
 
@@ -108,6 +118,49 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      <section id="como-funciona" className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+        <div className="rounded border-2 border-primary bg-mint-50 p-5 shadow-sm sm:p-7">
+          <h2 className="text-lg font-bold text-ink sm:text-xl">Como funciona</h2>
+          <p className="mt-2 text-sm text-muted">
+            Envie um texto sensível de forma anônima. O link criptografado some sozinho depois de um tempo ou de algumas leituras.
+          </p>
+          <ol className="mt-4 space-y-3 text-sm">
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">1</span>
+              <div>
+                <p className="font-semibold text-ink">Você escreve a nota</p>
+                <p className="text-muted">Digite o segredo, escolha dias de validade (1-7) e quantas vezes pode ser aberto (1-10). Pode adicionar uma frase secreta opcional.</p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">2</span>
+              <div>
+                <p className="font-semibold text-ink">Recebe um link</p>
+                <p className="text-muted">Exemplo: <code className="break-all text-primary">https://notasegura.app/n/abc123</code>. Compartilhe apenas com quem deve ver.</p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">3</span>
+              <div>
+                <p className="font-semibold text-ink">O destinatário abre e lê</p>
+                <p className="text-muted">Quem tem o link pode ler a nota. Se você usou frase secreta, ela será pedida antes de exibir.</p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">4</span>
+              <div>
+                <p className="font-semibold text-ink">A nota se autodestrói</p>
+                <p className="text-muted">Após expirar (dias ou visualizações), o link deixa de funcionar e o conteúdo é apagado.</p>
+              </div>
+            </li>
+          </ol>
+          <p className="mt-4 rounded border border-hairline-strong bg-mint-50 p-3 text-xs text-muted">
+            Dica: use frases secretas para notas muito sensíveis. Nós nunca armazenamos a frase em texto claro, então se você esquecer, não há recuperação.
+          </p>
+        </div>
+      </section>
+
 
       <aside className="mx-auto max-w-5xl px-4 py-2 text-center text-xs text-faint sm:px-6">
         {/* ads/add-ons placeholder (<=8% screen) */}
