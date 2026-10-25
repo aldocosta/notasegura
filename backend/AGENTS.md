@@ -53,6 +53,16 @@ NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/a
 - Never log secrets, passphrases, encrypted payloads, or PII.
 - Every HTTP request writes one sanitized `request` document to `application_logs`; every status >= 400 also writes one `error` document. Both use a 90-day TTL. stdout is only a copy.
 
+## Testing
+- Unit tests: `.spec.ts` next to the class they test (e.g., `crypto.service.spec.ts`).
+- E2E tests: `test/*.e2e-spec.ts` using supertest against the real app.
+- Test real behavior, not mocks. Mock only external boundaries (Mongo, crypto).
+- Cover: use cases (business logic), controllers (HTTP contracts), guards, interceptors.
+- At minimum: every use case has unit tests; every endpoint has at least one e2e test.
+- Coverage target: 80% lines for `src/application` and `src/domain`.
+- Run: `npm test` (unit) and `npm run test:e2e` (e2e).
+- Do not weaken tests to make them pass; report failures.
+
 ## Notes
 - Mongo connection via env (MONGODB_URI).
 - Jest rootDir `src`; ts-jest transform.
