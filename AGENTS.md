@@ -13,6 +13,7 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 | Product requirements / business rules | `docs/poc.md` |
 | Frontend design tokens & components | `docs/DESIGN-nerdwallet.md` |
 | Backend commands & stack | `backend/AGENTS.md` |
+| Backend logging standard | `backend/AGENTS.md` (Logging) |
 | Backend architecture (clean arch + use cases) | `backend/AGENTS.md` |
 | Frontend commands & stack | `frontend/AGENTS.md` |
 | Tessl rules | `.tessl/RULES.md` |
@@ -42,6 +43,8 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 - Ordem sugerida: mongo → backend (`npm run start:dev`) → frontend (`npm run dev`).
 
 ## Notes
+
+- **Delegação de validação**: O Mestre (este agente) não executa `./validate.sh`, testes ou E2E diretamente. Toda validação é delegada ao agente **QA Tester**, que reporta o resultado.
 
 - Expiry constraints: 1–7 days, 1–10 views.
 - Optional passphrase is part of encryption key (never stored in clear).
