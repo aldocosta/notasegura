@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ApplicationLogSchema } from '../../infrastructure/logging/application-log.schema';
-import { LogStore } from '../../infrastructure/logging/log-store';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ApplicationLogSchema } from './application-log.schema';
+import { LogStore } from './log-store';
 import { RequestCompletionInterceptor } from './request-completion.interceptor';
 
 @Module({
@@ -10,7 +11,11 @@ import { RequestCompletionInterceptor } from './request-completion.interceptor';
       { name: 'ApplicationLog', schema: ApplicationLogSchema },
     ]),
   ],
-  providers: [LogStore, RequestCompletionInterceptor],
+  providers: [
+    LogStore,
+    RequestCompletionInterceptor,
+    { provide: APP_INTERCEPTOR, useClass: RequestCompletionInterceptor },
+  ],
   exports: [LogStore, RequestCompletionInterceptor],
 })
 export class LoggingModule {}

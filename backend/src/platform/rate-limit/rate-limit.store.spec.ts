@@ -1,6 +1,10 @@
 import { RateLimitStore } from './rate-limit.store';
-import { RateLimitDocument } from '../../infrastructure/rate-limit/rate-limit.schema';
+import { RateLimitDocument } from './rate-limit.schema';
 import { Model } from 'mongoose';
+import {
+  RATE_LIMIT_CREATE_MAX,
+  RATE_LIMIT_WINDOW_SECONDS,
+} from './rate-limit.constants';
 
 type MockModel = {
   findOne: jest.Mock;
@@ -50,5 +54,10 @@ describe('RateLimitStore', () => {
     const result = await store.checkAndIncrement('1.2.3.4', 'POST:/api/notes');
     expect(result.allowed).toBe(false);
     expect(result.retryAfter).toBeGreaterThan(0);
+  });
+
+  it('keeps the create limit at 10 requests per 60 seconds', () => {
+    expect(RATE_LIMIT_CREATE_MAX).toBe(10);
+    expect(RATE_LIMIT_WINDOW_SECONDS).toBe(60);
   });
 });

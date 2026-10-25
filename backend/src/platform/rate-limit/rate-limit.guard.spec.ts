@@ -1,6 +1,6 @@
 import { RateLimitGuard } from './rate-limit.guard';
 import { ExecutionContext, HttpException } from '@nestjs/common';
-import { RateLimitStore } from '../../application/rate-limit/rate-limit.store';
+import { RateLimitStore } from './rate-limit.store';
 
 describe('RateLimitGuard', () => {
   let guard: RateLimitGuard;

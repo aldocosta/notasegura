@@ -7,9 +7,9 @@ import {
 import { Observable } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { Request, Response } from 'express';
-import { LogStore } from '../../infrastructure/logging/log-store';
-import { routeTemplate } from '../../infrastructure/logging/route-template';
-import { ApplicationLogRecord } from '../../infrastructure/logging/application-log.types';
+import { LogStore } from './log-store';
+import { routeTemplate } from './route-template';
+import { ApplicationLogRecord } from './application-log.types';
 
 interface HttpError extends Error {
   status?: number;

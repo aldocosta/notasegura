@@ -4,8 +4,8 @@ import { APP_GUARD } from '@nestjs/core';
 import {
   RateLimitDocument,
   RateLimitSchema,
-} from '../../infrastructure/rate-limit/rate-limit.schema';
-import { RateLimitStore } from '../../application/rate-limit/rate-limit.store';
+} from './rate-limit.schema';
+import { RateLimitStore } from './rate-limit.store';
 import { RateLimitGuard } from './rate-limit.guard';
 
 @Module({

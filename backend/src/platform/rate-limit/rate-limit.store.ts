@@ -1,13 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RateLimitDocument } from '../../infrastructure/rate-limit/rate-limit.schema';
+import { RateLimitDocument } from './rate-limit.schema';
 import {
   RATE_LIMIT_CREATE_MAX,
-  RATE_LIMIT_READ_MAX,
   RATE_LIMIT_WINDOW_SECONDS,
 } from './rate-limit.constants';
-import { RateLimitCheckResult } from '../../domain/rate-limit/rate-limit.types';
+import { RateLimitCheckResult } from './rate-limit.types';
 
 @Injectable()
 export class RateLimitStore {
@@ -31,7 +30,7 @@ export class RateLimitStore {
       windowStart.getTime() + RATE_LIMIT_WINDOW_SECONDS * 1000,
     );
 
-    const max = this.getLimitForEndpoint(endpoint);
+    const max = RATE_LIMIT_CREATE_MAX;
 
     // Try to find existing window
     const existing = await this.model
@@ -85,17 +84,6 @@ export class RateLimitStore {
     }
   }
 
-  private getLimitForEndpoint(endpoint: string): number {
-    if (
-      endpoint.startsWith('POST:/api/notes') ||
-      endpoint === 'POST:/api/notes' ||
-      endpoint.startsWith('POST:/notes') ||
-      endpoint === 'POST:/notes'
-    ) {
-      return RATE_LIMIT_CREATE_MAX;
-    }
-    return RATE_LIMIT_READ_MAX;
-  }
 }
 
 function retryAfterFor(expiresAt: Date, now: Date): number {

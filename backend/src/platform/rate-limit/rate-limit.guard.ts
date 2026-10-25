@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { RateLimitStore } from '../../application/rate-limit/rate-limit.store';
+import { RateLimitStore } from './rate-limit.store';
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
@@ -74,14 +74,4 @@ export class RateLimitGuard implements CanActivate {
     return request.socket?.remoteAddress || 'unknown';
   }
 
-  private getNormalizedPath(request: Request, url: string): string {
-    // Normalize to /api/notes for the endpoint key
-    if (url.includes('/api/notes')) {
-      return '/api/notes';
-    }
-    if (url.includes('/notes')) {
-      return '/notes';
-    }
-    return request.path || url;
-  }
 }

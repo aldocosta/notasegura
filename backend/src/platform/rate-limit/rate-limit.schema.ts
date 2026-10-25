@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { RATE_LIMIT_COLLECTION_NAME } from '../../application/rate-limit/rate-limit.constants';
+import { RATE_LIMIT_COLLECTION_NAME } from './rate-limit.constants';
 
 @Schema({ collection: RATE_LIMIT_COLLECTION_NAME })
 export class RateLimitDocument extends Document {
