@@ -45,6 +45,18 @@ Constraints: expiresInDays 1-7, maxViews 1-10. Passphrase optional, part of encr
 ## Stack
 NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/adapters).
 
+## Logging
+- Use NestJS `Logger` with per-class context (not `console.log`).
+- Levels: error, warn, log, debug, verbose. Prod: log+; dev: debug+ via `LOG_LEVEL` env.
+- Structured JSON in prod; pretty in dev.
+- Log at boundaries: request in/out, use-case start/end, errors with stack trace.
+- Never log secrets, passphrases, encrypted payloads, or PII.
+- Every HTTP request writes one sanitized `request` document to `application_logs`; every status >= 400 also writes one `error` document. Both use a 90-day TTL. stdout is only a copy.
+
 ## Notes
 - Mongo connection via env (MONGODB_URI).
 - Jest rootDir `src`; ts-jest transform.
+## Env config
+- Copy `.env.example` to `.env.development` (gitignored) for local dev.
+- `ConfigModule` loads `.env.development` then `.env`.
+- Vars: MONGODB_URI, PORT, NODE_ENV, LOG_LEVEL.
