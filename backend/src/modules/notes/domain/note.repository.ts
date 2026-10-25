@@ -1,4 +1,4 @@
-import { Note } from '../../domain/note.entity';
+import { Note } from './note.entity';
 export abstract class NoteRepository {
   abstract create(note: Note): Promise<Note>;
   abstract findById(id: string): Promise<Note | null>;

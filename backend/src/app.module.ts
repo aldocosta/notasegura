@@ -3,8 +3,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HealthModule } from './presentation/health/health.module';
-import { NotesModule } from './presentation/notes/notes.module';
-import { NotesModule as NotesErrorModule } from './modules/notes/notes.module';
+import { NotesModule } from './modules/notes/notes.module';
 import { LoggingModule } from './presentation/logging/logging.module';
 import { RequestCompletionInterceptor } from './presentation/logging/request-completion.interceptor';
 import { RateLimitModule } from './presentation/rate-limit/rate-limit.module';
@@ -26,7 +25,6 @@ import { AppService } from './app.service';
     // Nest checks global filters in reverse registration order. The catch-all
     // must be registered before the notes filter, or domain errors become 500.
     ErrorsModule,
-    NotesErrorModule,
     HealthModule,
     NotesModule,
     LoggingModule,

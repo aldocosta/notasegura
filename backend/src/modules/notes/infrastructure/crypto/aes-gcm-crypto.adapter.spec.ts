@@ -1,7 +1,7 @@
-import { CryptoServiceImpl } from './crypto.service';
+import { AesGcmCryptoAdapter } from './aes-gcm-crypto.adapter';
 
-describe('CryptoServiceImpl', () => {
-  const svc = new CryptoServiceImpl();
+describe('AesGcmCryptoAdapter', () => {
+  const svc = new AesGcmCryptoAdapter();
 
   it('roundtrips plain text without passphrase', () => {
     const payload = svc.encrypt('hello');

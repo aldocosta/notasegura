@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Note } from '../../domain/note.entity';
-import { NoteRepository } from '../repositories/note.repository';
-import { CryptoService } from '../services/crypto.service';
+import { Note } from '../domain/note.entity';
+import { NoteRepository } from '../domain/note.repository';
+import { CryptoService } from '../domain/crypto.service';
 export interface CreateNoteInput {
   text: string;
   passphrase?: string;

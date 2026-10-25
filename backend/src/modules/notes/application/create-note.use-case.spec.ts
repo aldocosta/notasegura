@@ -1,7 +1,7 @@
 import { CreateNoteUseCase } from './create-note.use-case';
-import { NoteRepository } from '../repositories/note.repository';
-import { CryptoService } from '../services/crypto.service';
-import { Note } from '../../domain/note.entity';
+import { NoteRepository } from '../domain/note.repository';
+import { CryptoService } from '../domain/crypto.service';
+import { Note } from '../domain/note.entity';
 
 describe('CreateNoteUseCase', () => {
   it('encrypts and persists note', async () => {

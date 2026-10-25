@@ -8,9 +8,9 @@ import {
 import {
   CryptoService as ICryptoService,
   EncryptedPayload,
-} from '../../application/services/crypto.service';
+} from '../../domain/crypto.service';
 @Injectable()
-export class CryptoServiceImpl extends ICryptoService {
+export class AesGcmCryptoAdapter extends ICryptoService {
   private deriveKey(
     passphrase?: string,
     salt?: Buffer,

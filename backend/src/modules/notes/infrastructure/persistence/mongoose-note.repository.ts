@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note } from '../../domain/note.entity';
-import { NoteRepository } from '../../application/repositories/note.repository';
+import { NoteRepository } from '../../domain/note.repository';
 import { NoteDocument } from './note.schema';
 @Injectable()
 export class MongooseNoteRepository extends NoteRepository {

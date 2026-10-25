@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CreateNoteUseCase } from '../../application/use-cases/create-note.use-case';
-import { GetNoteUseCase } from '../../application/use-cases/get-note.use-case';
+import { CreateNoteUseCase } from '../application/create-note.use-case';
+import { GetNoteUseCase } from '../application/get-note.use-case';
 import { CreateNoteDto } from './create-note.dto';
 @Controller('notes')
 export class NotesController {

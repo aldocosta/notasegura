@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { NoteRepository } from '../repositories/note.repository';
-import { CryptoService } from '../services/crypto.service';
+import { NoteRepository } from '../domain/note.repository';
+import { CryptoService } from '../domain/crypto.service';
 import {
   InvalidPassphrase,
   NoteExpired,
   NoteNotFound,
-} from '../../modules/notes/domain/errors';
+} from '../domain/errors';
 @Injectable()
 export class GetNoteUseCase {
   constructor(
