@@ -3,10 +3,10 @@
 ## Architecture model (reference)
 
 Clean Architecture + DDD (rich domain entities) with use cases and repository pattern:
-- domain: rich entities + repository ports (interfaces).
-- application: use cases (CreateNoteUseCase, GetNoteUseCase) + DTOs.
-- infrastructure: adapters (Mongoose repository, AES crypto).
-- presentation: controllers + HTTP DTOs + modules.
+- business capabilities live in `src/modules/<capability>/` with inner `domain/`, `application/`, `infrastructure/`, `presentation/`.
+- technical capabilities live in `src/platform/` (logging, rate-limit, health, errors).
+- ports (`NoteRepository`, `CryptoService`) live in the module `domain/` directory.
+- use cases throw domain errors (`NoteNotFound`, `NoteExpired`, `InvalidPassphrase`); HTTP mapping happens in `presentation/notes-error.filter.ts`.
 
 Repository pattern: `NoteRepository` port in domain, `MongooseNoteRepository` adapter in infrastructure.
 DDD: entities encapsulate invariants/behavior; not anemic models.
@@ -16,10 +16,8 @@ Dependencies point inward. NestJS DI wires implementations to interfaces.
 Layer layout:
 ```
 src/
-  domain/
-  application/use-cases/
-  infrastructure/(crypto, persistence)
-  presentation/(notes, health)
+  modules/notes/{domain,application,infrastructure,presentation}/
+  platform/{errors,logging,rate-limit,health}/
 ```
 
 Use cases:
@@ -52,6 +50,18 @@ NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/a
 - Log at boundaries: request in/out, use-case start/end, errors with stack trace.
 - Never log secrets, passphrases, encrypted payloads, or PII.
 - Every HTTP request writes one sanitized `request` document to `application_logs`; every status >= 400 also writes one `error` document. Both use a 90-day TTL. stdout is only a copy.
+
+## Testing
+- Unit tests: `.spec.ts` next to the class they test (e.g., `crypto.service.spec.ts`).
+- E2E tests: `test/*.e2e-spec.ts` using supertest against the real app.
+- Test real behavior, not mocks. Mock only external boundaries (Mongo, crypto).
+- Cover: use cases (business logic), controllers (HTTP contracts), guards, interceptors.
+- At minimum: every use case has unit tests; every endpoint has at least one e2e test.
+- Coverage target: 80% lines for `src/modules` and `src/platform`.
+- Structural rules enforced by `src/architecture.spec.ts`.
+- Regression suite: `test/notes.e2e-spec.ts`.
+- Run: `npm test` (unit) and `npm run test:e2e` (e2e).
+- Do not weaken tests to make them pass; report failures.
 
 ## Notes
 - Mongo connection via env (MONGODB_URI).

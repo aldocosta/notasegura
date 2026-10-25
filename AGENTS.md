@@ -14,6 +14,7 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 | Frontend design tokens & components | `docs/DESIGN-nerdwallet.md` |
 | Backend commands & stack | `backend/AGENTS.md` |
 | Backend logging standard | `backend/AGENTS.md` (Logging) |
+| Backend testing standard | `backend/AGENTS.md` (Testing) |
 | Backend architecture (clean arch + use cases) | `backend/AGENTS.md` |
 | Frontend commands & stack | `frontend/AGENTS.md` |
 | Tessl rules | `.tessl/RULES.md` |
@@ -30,6 +31,17 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 - If missing, stop and ask the user for approval (do not implement).
 - Helper: `./check-approval.sh <change-name>`.
 - Create the marker only after explicit user approval.
+
+## Specs & Tests
+
+- **Test plan is MANDATORY.** Every new change under `.specs/changes/<name>/` MUST define tests in `tasks.md`. If a change alters behavior, there is NO "add tests later". 
+- **Be explicit.** Don't write "add tests". Write the exact file path, test case and assertion. Ex: `backend/src/application/use-cases/create-note.use-case.spec.ts` - "it('throws when note is expired')" asserting behavior.
+- **Unit tests:** use cases, domain, services, guards, interceptors, pure functions -> `src/**/*.spec.ts` next to the file.
+- **E2E/Integration:** controllers/endpoints/modules -> `test/**/*.e2e-spec.ts` with `supertest`.
+- **Infra tests:** schemas, indexes, TTL, persistence -> assert real behavior (e.g. `listIndexes()`).
+- **NO test execution during RPI/spec phase.** While researching, planning or writing specs (`proposal.md`, `design.md`, `tasks.md`, `specs/`), DO NOT run `npm test`, `jest`, `./validate.sh` or any test command. Stay in writing mode only.
+- **Tests are delegated.** Any test execution (unit/e2e/validate) MUST be delegated to **QA Tester** via `maestri ask "Tester" ...`. The Mestre does NOT run tests directly.
+- **Don't weaken tests.** Never change assertions to make failing tests pass. Fix implementation or raise with user.
 
 - Per-project scripts: `backend/validate.sh`, `frontend/validate.sh` (run independently).
 - Aggregator: `./validate.sh` runs both (backend then frontend).
