@@ -29,7 +29,8 @@ As a person sharing a note, I want the API to behave the same after the reorgani
 - Replace Nest HTTP exceptions in use cases with domain errors. Add one HTTP exception filter in `src/platform/errors/`.
 - Move logging, rate limiting, and health to `src/platform/`. Platform capabilities stay flat. They do not get the four-layer template.
 - Delete the root layer directories `src/domain/`, `src/application/`, `src/infrastructure/`, and `src/presentation/`.
-- Delete dead code: `LoggingExceptionFilter`, `getNormalizedPath`, `RATE_LIMIT_READ_MAX`, the duplicated interceptor registration, and the Nest boilerplate `AppController`/`AppService` with `GET /`.
+- Delete dead code: `LoggingExceptionFilter`, `getNormalizedPath`, `RATE_LIMIT_READ_MAX`, and the duplicated interceptor registration.
+- Keep `AppController`, `AppService`, and `GET /`. The route stays `200` with `Hello World!`.
 - Add `src/architecture.spec.ts` to enforce layout, dependency direction, cross-module isolation, and framework isolation.
 - Add `test/notes.e2e-spec.ts` as a regression suite for the preserved HTTP contract.
 - Move existing spec files with their subjects. No assertion changes, except import paths.
@@ -47,7 +48,7 @@ As a person sharing a note, I want the API to behave the same after the reorgani
 - CORS policy, security headers, environment validation, Terminus health, and shutdown hooks. Environment validation belongs to `backend-env-config`.
 - New features, new endpoints, and frontend changes.
 
-The defects listed in "Out of scope" get a follow-up change named `backend-contract-fixes`. See Open Questions.
+The defects listed in "Out of scope" get a follow-up change named `backend-contract-fixes`.
 
 ## Approach
 
@@ -55,18 +56,17 @@ Use vertical slices with layers inside each slice. The module boundary is the Ne
 
 Platform capabilities do not have domain rules. They are framework glue. Each one stays flat in one directory: `src/platform/logging/`, `src/platform/rate-limit/`, `src/platform/health/`, and `src/platform/errors/`.
 
-Make the error boundary explicit. Use cases throw domain errors. A single `@Catch()` filter maps each domain error to one HTTP status. The response body stays byte-identical to the current Nest default for the same status.
+Make the error boundary explicit. Use cases throw domain errors. The notes module maps its own domain errors to HTTP. A platform filter maps every other error to `500`. The response body stays byte-identical to the current Nest default for the same status.
+
+Each platform concern keeps the Nest primitive that matches its place in the request lifecycle. Logging stays an interceptor. Rate limiting stays a guard. Error mapping stays an exception filter. Health stays a controller. This change does not rewrite any of them as middleware.
 
 Keep every observable behavior. The refactor moves files and changes wiring. It does not change status codes, response bodies, headers, encryption output shape, TTL indexes, or log records.
-
-## Open Questions
-
-1. Do the five contract defects stay in the follow-up change `backend-contract-fixes`, or does this change fix them? The five defects are: the view-count race, the missing deletion after the last view, `410` versus `404`, the passphrase in the query string, and `500` for a malformed note id. Recommendation: keep them in the follow-up change, so this refactor stays reviewable and testable as behavior-preserving.
-2. Is `src/modules/<capability>/` the approved path, or does the project prefer `src/<capability>/`? This proposal uses `src/modules/`.
-3. Is a flat platform area approved for logging, rate limiting, health, and errors? This proposal keeps those capabilities flat, without `domain/` or `application/` directories.
-4. Does `GET /` go away with the Nest boilerplate? This proposal removes it.
-5. Should the architecture test support an allowlist for a future shared kernel, or fail on any import outside the module? This proposal fails on any import outside the module, except `src/platform/`.
 
 ## Resolved Questions
 
 - 2026-10-25 Layer-first layout at the root of `src/`: the project replaces it with vertical slices. Each business capability gets one module directory, and its layers live inside that directory. Decided with the user.
+- 2026-10-25 Contract defects in this change: they stay out. The follow-up change `backend-contract-fixes` owns the view-count race, deletion after the last view, `410` versus `404`, the passphrase in the query string, and `500` for a malformed note id. The user delegated the choice. Decided with the user.
+- 2026-10-25 Module path: `src/modules/<capability>/`. Decided with the user.
+- 2026-10-25 Platform shape and Nest primitives: `src/platform/` stays flat. Logging stays an interceptor, rate limiting stays a guard, error mapping stays an exception filter, and health stays a controller. Middleware does not replace them. The user asked whether middleware or interceptors could replace the platform slices. Decided with the user.
+- 2026-10-25 Root route: `GET /` stays. `AppController` and `AppService` stay. The response stays `200` with `Hello World!`. Decided with the user.
+- 2026-10-25 Shared kernel: no `src/shared/` in this change. A module may import `src/platform/` and another module's public entry point. Any other cross-module import fails the architecture test. Add a shared folder only when a second business module needs one. Decided with the user.

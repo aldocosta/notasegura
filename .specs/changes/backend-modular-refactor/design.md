@@ -85,16 +85,37 @@ Each filter is registered once, in the module that owns it.
 - `dependency-cruiser` or `eslint-plugin-boundaries`: stronger rules and better messages, but two new dependencies and two new configuration files for one POC.
 - An ESLint `no-restricted-imports` rule: cannot express "only this module's public entry point" without per-module configuration.
 
-### Decision: Delete `GET /` and the Nest boilerplate
+### Decision: Keep `GET /`
 
-**Chosen:** Remove `AppController`, `AppService`, and `test/app.e2e-spec.ts`. The root route returns `404` after this change.
+**Chosen:** Keep `AppController`, `AppService`, and `test/app.e2e-spec.ts`. `GET /` stays `200` with the body `Hello World!`. `setGlobalPrefix` keeps the exclusion for `/`.
 
-**Rationale:** The route returns `Hello World!` and serves no product purpose. `GET /api/health` is the operational endpoint. Keeping a dead route in a security-focused product adds surface with no value.
+**Rationale:** The user rejected removal. The route is part of the preserved HTTP contract for this change, even though it serves no product purpose.
 
 **Alternatives considered:**
 
-- Keep the route: preserves one undocumented behavior, but keeps dead code.
+- Remove the route: rejected by the user on 2026-10-25.
 - Redirect `/` to the frontend: out of scope. Deployment topology is not part of this change.
+
+### Decision: Keep the Nest primitive for each platform concern
+
+**Chosen:** Logging stays an interceptor. Rate limiting stays a guard. Error mapping stays an exception filter. Health stays a controller. This change moves those classes. It does not rewrite them as middleware.
+
+**Rationale:** The Nest request lifecycle is middleware, then guards, then interceptors, then pipes, then the handler, then interceptors again, then exception filters. Each concern already sits at the point that can see what it needs. An interceptor sees the outcome and the error, so it fits request logging. A guard sees the chosen route through `ExecutionContext`, so it fits a limit that applies to one route. A filter is the only component that runs on an uncaught exception, so it fits error mapping. Health is a route, so it stays a controller. Middleware runs before Nest selects the handler, so it cannot know the route and it cannot catch a controller exception.
+
+**Alternatives considered:**
+
+- One middleware for logging, rate limiting, and errors: it would run too early for errors and too blind for route-specific limits. The Nest docs call middleware context-blind.
+- Rewrite the rate-limit guard as middleware in this change: possible, but it is a behavior change, not a move. Out of scope.
+
+### Decision: No shared folder in this change
+
+**Chosen:** Do not create `src/shared/`. A module may import `src/platform/` and another module's public entry point. Any other cross-module import fails `src/architecture.spec.ts`.
+
+**Rationale:** There is one business module. An empty shared folder becomes a dump. Add the folder when a second module needs a type that is neither platform nor owned by one module.
+
+**Alternatives considered:**
+
+- Create `src/shared/` now and allowlist it: rejected by the user on 2026-10-25.
 
 ### Decision: Move files with `git mv`
 

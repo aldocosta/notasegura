@@ -181,11 +181,12 @@ Serves: unchanged-behavior
 - **THEN** the response status is `200`
 - **THEN** the response body is `{ "status": "ok" }`
 
-#### Scenario: Root route is removed
+#### Scenario: Root route stays
 
 - **GIVEN** the application is running
 - **WHEN** the client sends `GET /`
-- **THEN** the response status is `404`
+- **THEN** the response status is `200`
+- **THEN** the response body is `Hello World!`
 
 ### Requirement: Module Composition
 

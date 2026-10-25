@@ -64,7 +64,8 @@ Use `git mv` for every file move.
 - [ ] Update `src/platform/rate-limit/rate-limit.store.spec.ts`: add `it('keeps the create limit at 10 requests per 60 seconds')` asserting `RATE_LIMIT_CREATE_MAX === 10` and `RATE_LIMIT_WINDOW_SECONDS === 60`.
 - [ ] Move `src/presentation/health/health.controller.ts` and `health.module.ts` to `src/platform/health/`.
 - [ ] Update `src/app.module.ts` imports to `src/modules/notes/notes.module.ts`, `src/platform/logging/logging.module.ts`, `src/platform/rate-limit/rate-limit.module.ts`, `src/platform/health/health.module.ts`, `src/platform/errors/errors.module.ts`.
-- [ ] Remove `src/app.controller.ts` and `src/app.service.ts`, and their references in `src/app.module.ts`.
+- [ ] Keep `src/app.controller.ts` and `src/app.service.ts` registered in `AppModule`.
+- [ ] Keep `setGlobalPrefix('api', { exclude: ['/', '/api/health'] })` in `src/main.ts`, so `GET /` stays outside the prefix.
 - [ ] Delete the now-empty directories `src/presentation/`, `src/infrastructure/`, and `src/application/`.
 
 ## 4. Enforcement
@@ -88,8 +89,8 @@ Use `git mv` for every file move.
   - [ ] `it('rejects maxViews above 10')`: `POST /api/notes` with `maxViews: 11`; assert `400`.
   - [ ] `it('returns 429 with Retry-After after 10 creates from one IP')`: send 10 creates, then an eleventh; assert `429` and a defined `retry-after` header.
   - [ ] `it('answers the health check')`: `GET /api/health`; assert `200` and body `{ status: 'ok' }`.
-  - [ ] `it('removes the root route')`: `GET /`; assert `404`.
-- [ ] Delete `test/app.e2e-spec.ts`. `GET /` now returns `404`, and `test/notes.e2e-spec.ts` covers that case.
+  - [ ] `it('keeps the root route')`: `GET /`; assert `200` and body `Hello World!`.
+- [ ] Keep `test/app.e2e-spec.ts`. Update it only if the prefix exclusion requires it. The assertion stays `200` and `Hello World!`.
 - [ ] Keep `test/rate-limit.e2e-spec.ts` unchanged. Adjust only the import path if it moves.
 
 ## 5. Tooling and documentation
