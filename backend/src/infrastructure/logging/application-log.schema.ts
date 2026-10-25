@@ -15,7 +15,10 @@ const applicationLogSchema = new mongoose.Schema(
   { collection: 'application_logs', timestamps: false },
 );
 
-applicationLogSchema.index({ occurredAt: 1 }, { expireAfterSeconds: APPLICATION_LOG_TTL_SECONDS });
+applicationLogSchema.index(
+  { occurredAt: 1 },
+  { expireAfterSeconds: APPLICATION_LOG_TTL_SECONDS },
+);
 
 export const ApplicationLogSchema = applicationLogSchema;
 export type ApplicationLogDocument = mongoose.Document & {

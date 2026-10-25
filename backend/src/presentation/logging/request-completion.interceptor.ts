@@ -4,26 +4,47 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
+import { Request, Response } from 'express';
 import { LogStore } from '../../infrastructure/logging/log-store';
 import { routeTemplate } from '../../infrastructure/logging/route-template';
 import { ApplicationLogRecord } from '../../infrastructure/logging/application-log.types';
+
+interface HttpError extends Error {
+  status?: number;
+  statusCode?: number;
+}
 
 @Injectable()
 export class RequestCompletionInterceptor implements NestInterceptor {
   constructor(private readonly store: LogStore) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = context.switchToHttp().getRequest();
-    const res = context.switchToHttp().getResponse();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const req = context.switchToHttp().getRequest<Request>();
+    const res = context.switchToHttp().getResponse<Response>();
     const start = Date.now();
     const route = routeTemplate(req);
-    const method = req?.method ?? '';
+    const method = req.method ?? '';
 
-    const secrets = [req?.params?.id, req?.query?.passphrase, req?.body?.text].filter(Boolean);
+    const reqAny = req as unknown as {
+      params?: Record<string, unknown>;
+      query?: Record<string, unknown>;
+      body?: Record<string, unknown>;
+    };
 
-    const writeRequest = async (status: number, error?: { message?: string; stack?: string }) => {
+    const secrets = [
+      typeof reqAny.params?.id === 'string' ? reqAny.params.id : undefined,
+      typeof reqAny.query?.passphrase === 'string'
+        ? reqAny.query.passphrase
+        : undefined,
+      typeof reqAny.body?.text === 'string' ? reqAny.body.text : undefined,
+    ].filter((s): s is string => Boolean(s));
+
+    const writeRequest = async (
+      status: number,
+      error?: { message?: string; stack?: string },
+    ) => {
       const occurredAt = new Date();
       const durationMs = Date.now() - start;
       const requestRecord: ApplicationLogRecord = {
@@ -50,17 +71,18 @@ export class RequestCompletionInterceptor implements NestInterceptor {
     };
 
     return next.handle().pipe(
-      mergeMap(async (data) => {
-        await writeRequest(res?.statusCode ?? 200);
+      mergeMap(async (data: unknown) => {
+        await writeRequest(res.statusCode ?? 200);
         return data;
       }),
-      catchError(async (err) => {
-        const status = err?.status ?? err?.statusCode ?? 500;
-        const message = err?.message ?? 'Internal server error';
-        const stack = err?.stack;
+      catchError(async (err: unknown) => {
+        const httpErr = err as HttpError;
+        const status = httpErr?.status ?? httpErr?.statusCode ?? 500;
+        const message = httpErr?.message ?? 'Internal server error';
+        const stack = httpErr?.stack;
         await writeRequest(status, { message, stack });
         throw err;
       }),
-    ) as any;
+    );
   }
 }

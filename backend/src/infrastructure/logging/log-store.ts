@@ -12,12 +12,21 @@ export class LogStore {
     private readonly model: Model<ApplicationLogDocument>,
   ) {}
 
-  async append(record: ApplicationLogRecord, secrets: string[] = []): Promise<void> {
+  async append(
+    record: ApplicationLogRecord,
+    secrets: string[] = [],
+  ): Promise<void> {
     try {
-      const sanitized = redactValue({ ...record }, secrets) as ApplicationLogRecord;
+      const sanitized = redactValue(
+        { ...record },
+        secrets,
+      ) as ApplicationLogRecord;
       await this.model.create(sanitized);
-    } catch (err) {
-      process.stderr.write(`Log store failure: ${err?.stack ?? err}\n`);
+    } catch (err: unknown) {
+      const error = err as Error | undefined;
+      process.stderr.write(
+        `Log store failure: ${error?.stack ?? String(err)}\n`,
+      );
     }
   }
 }
