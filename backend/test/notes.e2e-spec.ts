@@ -28,28 +28,31 @@ describe('Notes (e2e)', () => {
       .post('/api/notes')
       .send({ text: 'hello', expiresInDays: 1, maxViews: 1 });
     expect(res.status).toBe(201);
-    expect(typeof res.body.id).toBe('string');
-    expect(res.body.id.length).toBeGreaterThan(0);
-    expect(res.body.url).toBe(`/notes/${res.body.id}`);
+    const body = res.body as { id: string; url: string };
+    expect(typeof body.id).toBe('string');
+    expect(body.id.length).toBeGreaterThan(0);
+    expect(body.url).toBe(`/notes/${body.id}`);
   });
 
   it('reads a note with the original plaintext', async () => {
     const created = await request(app.getHttpServer())
       .post('/api/notes')
       .send({ text: 'hello', expiresInDays: 1, maxViews: 1 });
+    const createdBody = created.body as { id: string };
     const res = await request(app.getHttpServer()).get(
-      `/api/notes/${created.body.id}`,
+      `/api/notes/${createdBody.id}`,
     );
     expect(res.status).toBe(200);
-    expect(res.body.text).toBe('hello');
+    expect((res.body as { text: string }).text).toBe('hello');
   });
 
   it('requires the passphrase when the note is protected', async () => {
     const created = await request(app.getHttpServer())
       .post('/api/notes')
       .send({ text: 'secret', expiresInDays: 1, maxViews: 1, passphrase: 'p' });
+    const createdBody = created.body as { id: string };
     const res = await request(app.getHttpServer()).get(
-      `/api/notes/${created.body.id}`,
+      `/api/notes/${createdBody.id}`,
     );
     expect(res.status).toBe(401);
   });
@@ -58,8 +61,9 @@ describe('Notes (e2e)', () => {
     const created = await request(app.getHttpServer())
       .post('/api/notes')
       .send({ text: 'secret', expiresInDays: 1, maxViews: 1, passphrase: 'p' });
+    const createdBody = created.body as { id: string };
     const res = await request(app.getHttpServer()).get(
-      `/api/notes/${created.body.id}?passphrase=wrong`,
+      `/api/notes/${createdBody.id}?passphrase=wrong`,
     );
     expect(res.status).toBe(401);
   });

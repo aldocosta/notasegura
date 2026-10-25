@@ -163,7 +163,7 @@ describe('architecture', () => {
   });
 
   it('registers APP_INTERCEPTOR exactly once', () => {
-    const files = walk(SRC);
+    const files = walk(SRC).filter((f) => !f.endsWith('.spec.ts'));
     let count = 0;
     for (const f of files) {
       const text = fs.readFileSync(f, 'utf8');
