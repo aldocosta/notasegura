@@ -2,7 +2,11 @@ import { GetNoteUseCase } from './get-note.use-case';
 import { NoteRepository } from '../repositories/note.repository';
 import { CryptoService } from '../services/crypto.service';
 import { Note } from '../../domain/note.entity';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  InvalidPassphrase,
+  NoteExpired,
+  NoteNotFound,
+} from '../../modules/notes/domain/errors';
 
 describe('GetNoteUseCase', () => {
   const makeNote = (overrides: Record<string, unknown> = {}) =>
@@ -23,7 +27,7 @@ describe('GetNoteUseCase', () => {
     } as unknown as NoteRepository;
     const crypto = { decrypt: jest.fn() } as unknown as CryptoService;
     const uc = new GetNoteUseCase(repo, crypto);
-    await expect(uc.execute('x')).rejects.toThrow(NotFoundException);
+    await expect(uc.execute('x')).rejects.toThrow(NoteNotFound);
   });
 
   it('throws 404 when expired', async () => {
@@ -34,7 +38,7 @@ describe('GetNoteUseCase', () => {
     } as unknown as NoteRepository;
     const crypto = { decrypt: jest.fn() } as unknown as CryptoService;
     const uc = new GetNoteUseCase(repo, crypto);
-    await expect(uc.execute('x')).rejects.toThrow(NotFoundException);
+    await expect(uc.execute('x')).rejects.toThrow(NoteExpired);
   });
 
   it('throws 401 on bad passphrase', async () => {
@@ -49,9 +53,7 @@ describe('GetNoteUseCase', () => {
       }),
     } as unknown as CryptoService;
     const uc = new GetNoteUseCase(repo, crypto);
-    await expect(uc.execute('x', 'wrong')).rejects.toThrow(
-      UnauthorizedException,
-    );
+    await expect(uc.execute('x', 'wrong')).rejects.toThrow(InvalidPassphrase);
   });
 
   it('returns text, consumes view, updates', async () => {

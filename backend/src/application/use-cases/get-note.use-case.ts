@@ -1,10 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { NoteRepository } from '../repositories/note.repository';
 import { CryptoService } from '../services/crypto.service';
+import {
+  InvalidPassphrase,
+  NoteExpired,
+  NoteNotFound,
+} from '../../modules/notes/domain/errors';
 @Injectable()
 export class GetNoteUseCase {
   constructor(
@@ -13,8 +14,8 @@ export class GetNoteUseCase {
   ) {}
   async execute(id: string, passphrase?: string): Promise<string> {
     const note = await this.repo.findById(id);
-    if (!note || note.isExpired())
-      throw new NotFoundException('Note not found or expired');
+    if (!note) throw new NoteNotFound();
+    if (note.isExpired()) throw new NoteExpired();
     let text: string;
     try {
       text = this.crypto.decrypt(
@@ -27,7 +28,7 @@ export class GetNoteUseCase {
         passphrase,
       );
     } catch {
-      throw new UnauthorizedException('Passphrase required or invalid');
+      throw new InvalidPassphrase();
     }
     note.consumeView();
     await this.repo.update(note);
