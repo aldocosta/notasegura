@@ -6,6 +6,9 @@ import { HealthModule } from './presentation/health/health.module';
 import { NotesModule } from './presentation/notes/notes.module';
 import { LoggingModule } from './presentation/logging/logging.module';
 import { RequestCompletionInterceptor } from './presentation/logging/request-completion.interceptor';
+import { RateLimitModule } from './presentation/rate-limit/rate-limit.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -21,7 +24,12 @@ import { RequestCompletionInterceptor } from './presentation/logging/request-com
     HealthModule,
     NotesModule,
     LoggingModule,
+    RateLimitModule,
   ],
-  providers: [{ provide: APP_INTERCEPTOR, useClass: RequestCompletionInterceptor }],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    { provide: APP_INTERCEPTOR, useClass: RequestCompletionInterceptor },
+  ],
 })
 export class AppModule {}

@@ -16,6 +16,7 @@ Delete this file when the remaining changes can apply and sync in any order.
 ## Independent
 
 - `persist-application-logs`
+- `rate-limiting`
 - `backend-logging`
 - `backend-safenote`
 - `backend-env-config`
