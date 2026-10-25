@@ -33,8 +33,7 @@ export class RateLimitGuard implements CanActivate {
 
     // Rate limit ONLY POST /api/notes
     const isPostNotes =
-      method === 'POST' &&
-      (url.includes('/notes') || path.includes('/notes'));
+      method === 'POST' && (url.includes('/notes') || path.includes('/notes'));
 
     if (!isPostNotes) {
       return true;
@@ -73,5 +72,4 @@ export class RateLimitGuard implements CanActivate {
     }
     return request.socket?.remoteAddress || 'unknown';
   }
-
 }

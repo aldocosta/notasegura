@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
-import {
-  RateLimitDocument,
-  RateLimitSchema,
-} from './rate-limit.schema';
+import { RateLimitDocument, RateLimitSchema } from './rate-limit.schema';
 import { RateLimitStore } from './rate-limit.store';
 import { RateLimitGuard } from './rate-limit.guard';
 

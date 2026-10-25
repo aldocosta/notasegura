@@ -2,11 +2,7 @@ import { GetNoteUseCase } from './get-note.use-case';
 import { NoteRepository } from '../domain/note.repository';
 import { CryptoService } from '../domain/crypto.service';
 import { Note } from '../domain/note.entity';
-import {
-  InvalidPassphrase,
-  NoteExpired,
-  NoteNotFound,
-} from '../domain/errors';
+import { InvalidPassphrase, NoteExpired, NoteNotFound } from '../domain/errors';
 
 describe('GetNoteUseCase', () => {
   const makeNote = (overrides: Record<string, unknown> = {}) =>
