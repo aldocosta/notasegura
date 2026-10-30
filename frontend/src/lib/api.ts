@@ -1,5 +1,3 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-
 export type CreateNoteInput = {
   text: string;
   passphrase?: string;
@@ -8,7 +6,7 @@ export type CreateNoteInput = {
 };
 
 export async function createNote(input: CreateNoteInput): Promise<{ id: string; url: string }> {
-const res = await fetch(`${BASE}/api/notes`, {
+const res = await fetch("/api/notes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -19,7 +17,7 @@ const res = await fetch(`${BASE}/api/notes`, {
 
 export async function getNote(id: string, passphrase?: string): Promise<{ text: string }> {
   const qs = passphrase ? `?passphrase=${encodeURIComponent(passphrase)}` : "";
-  const res = await fetch(`${BASE}/api/notes/${id}${qs}`);
+  const res = await fetch(`/api/notes/${id}${qs}`);
   if (!res.ok) throw new Error(String(res.status));
   return res.json();
 }
