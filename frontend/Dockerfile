@@ -10,8 +10,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm install --legacy-peer-deps --omit=dev
-COPY --from=build /app/.next ./.next
+COPY --from=build --chown=node:node /app/.next ./.next
 COPY --from=build /app/public ./public
 COPY --from=build /app/next.config.* ./
+USER node
 EXPOSE 3000
 CMD ["npm", "start"]

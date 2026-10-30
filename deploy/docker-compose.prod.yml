@@ -1,0 +1,60 @@
+name: notasegura
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+    networks:
+      - edge
+
+  frontend:
+    image: ghcr.io/${GHCR_OWNER}/notasegura-frontend:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:3000
+    depends_on:
+      backend:
+        condition: service_healthy
+    mem_limit: 512m
+    networks:
+      - edge
+      - app
+
+  backend:
+    image: ghcr.io/${GHCR_OWNER}/notasegura-backend:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      PORT: "3000"
+      TRUST_PROXY: uniquelocal
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    mem_limit: 512m
+    networks:
+      - app
+
+# Caddy fica fora da rede "app": só o frontend alcança o backend.
+# "app" não é internal porque o backend precisa sair para o Atlas.
+networks:
+  edge:
+  app:
+
+volumes:
+  caddy_data:
+  caddy_config:
