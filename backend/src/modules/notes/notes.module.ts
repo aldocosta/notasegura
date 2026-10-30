@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_FILTER } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import {
   NoteDocument,
   NoteSchema,
@@ -23,7 +24,14 @@ import { NotesErrorFilter } from './presentation/notes-error.filter';
   controllers: [NotesController],
   providers: [
     { provide: NoteRepository, useClass: MongooseNoteRepository },
-    { provide: CryptoService, useClass: AesGcmCryptoAdapter },
+    {
+      provide: CryptoService,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =>
+        new AesGcmCryptoAdapter(
+          config.getOrThrow<string>('NOTE_DEFAULT_PASSPHRASE'),
+        ),
+    },
     CreateNoteUseCase,
     GetNoteUseCase,
     { provide: APP_FILTER, useClass: NotesErrorFilter },

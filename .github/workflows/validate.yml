@@ -20,3 +20,4 @@ jobs:
       - run: ./validate.sh
         env:
           MONGODB_URI: mongodb://localhost:27017/safenote
+          NOTE_DEFAULT_PASSPHRASE: ci-default
