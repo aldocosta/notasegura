@@ -9,3 +9,7 @@ The hero's "Como Funciona!" button takes the user down to the explanation card, 
 ## Scope
 - In scope: `frontend/src/app/page.tsx` (new button, `id` on the form section, focus on the textarea after scrolling), unit and E2E tests, the Vitest `@/` alias needed to render the page in unit tests.
 - Out of scope: backend, layout changes to other sections, changes to the existing "Como Funciona!" button behavior, extracting a shared button component.
+
+## Resolved Questions
+- 2026-10-30 Section order: the "Como funciona" card moves above the "Criar uma nota" form; only the positions change. Decided with the user.
+- 2026-10-30 Button label: "Criar 1 Nota" becomes "Criar a primeira nota". Decided with the user.
