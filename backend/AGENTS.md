@@ -69,4 +69,5 @@ NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/a
 ## Env config
 - Copy `.env.example` to `.env.development` (gitignored) for local dev.
 - `ConfigModule` loads `.env.development` then `.env`.
-- Vars: MONGODB_URI, PORT, NODE_ENV, LOG_LEVEL.
+- Vars: MONGODB_URI, NOTE_DEFAULT_PASSPHRASE (required), PORT, NODE_ENV, LOG_LEVEL, TRUST_PROXY.
+- NOTE_DEFAULT_PASSPHRASE encrypts notes created without a user passphrase. Changing it makes those notes unreadable.

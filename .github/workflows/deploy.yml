@@ -98,6 +98,7 @@ jobs:
       - name: Upload compose files
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NOTE_DEFAULT_PASSPHRASE: ${{ secrets.NOTE_DEFAULT_PASSPHRASE }}
           GHCR_OWNER: ${{ needs.build.outputs.owner }}
           IMAGE_TAG: ${{ needs.build.outputs.tag }}
         run: |
@@ -107,6 +108,7 @@ jobs:
             echo "GHCR_OWNER=$GHCR_OWNER"
             echo "IMAGE_TAG=$IMAGE_TAG"
             echo "MONGODB_URI=$MONGODB_URI"
+            echo "NOTE_DEFAULT_PASSPHRASE=$NOTE_DEFAULT_PASSPHRASE"
           } > .env.deploy
           scp deploy/docker-compose.prod.yml droplet:/opt/notasegura/docker-compose.yml
           scp deploy/Caddyfile droplet:/opt/notasegura/Caddyfile

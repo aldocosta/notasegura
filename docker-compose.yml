@@ -19,6 +19,7 @@ services:
       - "3001:3000"
     environment:
       MONGODB_URI: mongodb://mongo:27017/safenote
+      NOTE_DEFAULT_PASSPHRASE: local-dev-default
       PORT: "3000"
     depends_on:
       - mongo

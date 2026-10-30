@@ -37,6 +37,7 @@ services:
     restart: unless-stopped
     environment:
       MONGODB_URI: ${MONGODB_URI}
+      NOTE_DEFAULT_PASSPHRASE: ${NOTE_DEFAULT_PASSPHRASE}
       PORT: "3000"
       TRUST_PROXY: uniquelocal
     healthcheck:
