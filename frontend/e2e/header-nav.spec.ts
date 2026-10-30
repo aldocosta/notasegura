@@ -3,7 +3,6 @@ import { test, expect, type Page } from "@playwright/test";
 const DESKTOP = { width: 1280, height: 800 };
 const MOBILE = { width: 375, height: 812 };
 const NAV_LINKS: Array<[string, string]> = [
-  ["Como funciona", "/#como-funciona"],
   ["Sobre", "/sobre"],
   ["Privacidade", "/privacidade"],
   ["Termos", "/termos"],
@@ -43,12 +42,9 @@ test("current page is marked", async ({ page }) => {
   );
 });
 
-test("Como funciona goes to the home section", async ({ page }) => {
-  await page.setViewportSize(DESKTOP);
-  await page.goto("/termos");
-  await mainNav(page).getByRole("link", { name: "Como funciona", exact: true }).click();
-  await expect(page).toHaveURL(/\/#como-funciona$/);
-  await expect(page.locator("#como-funciona")).toBeInViewport();
+test("menu has no Como funciona link", async ({ page }) => {
+  await page.goto("/");
+  await expect(mainNav(page).getByRole("link", { name: "Como funciona" })).toHaveCount(0);
 });
 
 test("mobile menu opens, navigates, and closes", async ({ page }) => {

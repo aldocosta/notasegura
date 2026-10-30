@@ -11,7 +11,7 @@ export const TRUST_PAGES = [
   { href: "/contato", label: "Contato" },
 ] as const;
 
-export const NAV_LINKS = [{ href: "/#como-funciona", label: "Como funciona" }, ...TRUST_PAGES] as const;
+export const NAV_LINKS = [...TRUST_PAGES] as const;
 
 export function getSiteUrl(): string {
   const url = process.env.NEXT_PUBLIC_SITE_URL?.trim();

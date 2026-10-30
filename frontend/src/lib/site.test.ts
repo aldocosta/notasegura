@@ -54,7 +54,6 @@ describe("site config", () => {
 
   it("lists the main menu links", () => {
     expect(NAV_LINKS.map((l) => [l.label, l.href])).toEqual([
-      ["Como funciona", "/#como-funciona"],
       ["Sobre", "/sobre"],
       ["Privacidade", "/privacidade"],
       ["Termos", "/termos"],

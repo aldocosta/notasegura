@@ -12,4 +12,9 @@ describe("NotFound", () => {
     expect(screen.getByRole("heading", { name: "Página não encontrada" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Voltar para o início" })).toHaveAttribute("href", "/");
   });
+
+  it("shows the logo symbol", () => {
+    const { container } = render(<NotFound />);
+    expect(container.querySelector("svg")).not.toBeNull();
+  });
 });
