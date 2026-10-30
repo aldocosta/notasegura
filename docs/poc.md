@@ -14,8 +14,8 @@ Pessoas que precisam compartilhar texto (senhas, tokens, notas) de forma segura 
 
 1. **Criar nota**: textarea para o texto; opção de passphrase (opcional, parte da criptografia).
 2. **Configurar expiração**:
-   - Tempo: mínimo 1 dia, máximo 1 semana (7 dias).
-   - Visualizações: mínimo 1, máximo 10.
+   - Tempo: mínimo 1 dia, máximo 30 dias.
+   - Visualizações: mínimo 1, máximo 50.
 3. **Gerar link**: ao submeter, o backend criptografa e persiste; retorna URL única.
 4. **Abrir link**: quem tem o link vê o texto (se houver passphrase, é solicitada para descriptografar); cada abertura consome 1 visualização.
 5. **Expiração automática**: após o prazo ou após esgotar visualizações, o link retorna "não encontrado/expirado".
@@ -24,7 +24,7 @@ Pessoas que precisam compartilhar texto (senhas, tokens, notas) de forma segura 
 ## Regras de negócio
 
 - Passphrase é opcional; quando fornecida, integra a chave de criptografia (não armazenada em claro).
-- Mín/máx de dias: 1–7. Mín/máx de views: 1–10.
+- Mín/máx de dias: 1–30. Mín/máx de views: 1–50.
 - Conteúdo é apagado/expirado após limites; não há recuperação.
 - Links são únicos e não adivinháveis (UUID/token aleatório).
 

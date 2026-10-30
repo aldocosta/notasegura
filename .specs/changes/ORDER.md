@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`frontend-brand-and-trust-visuals` proposed)
+Last reviewed: 2026-10-30 (`note-limits-30-days-50-views` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -51,3 +51,4 @@ Delete this file when the remaining changes can apply and sync in any order.
 - `frontend-feature`
 - `backend-invalid-note-id`
 - `rate-limit-configurable`
+- `note-limits-30-days-50-views`

@@ -82,17 +82,24 @@ describe('Notes (e2e)', () => {
     expect(res.status).toBe(404);
   });
 
-  it('rejects expiresInDays above 7', async () => {
+  it('creates a note with 30 days and 50 views', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/notes')
-      .send({ text: 'hello', expiresInDays: 8, maxViews: 1 });
+      .send({ text: 'hello', expiresInDays: 30, maxViews: 50 });
+    expect(res.status).toBe(201);
+  });
+
+  it('rejects expiresInDays above 30', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/notes')
+      .send({ text: 'hello', expiresInDays: 31, maxViews: 1 });
     expect(res.status).toBe(400);
   });
 
-  it('rejects maxViews above 10', async () => {
+  it('rejects maxViews above 50', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/notes')
-      .send({ text: 'hello', expiresInDays: 1, maxViews: 11 });
+      .send({ text: 'hello', expiresInDays: 1, maxViews: 51 });
     expect(res.status).toBe(400);
   });
 
