@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
+import { getConnectionToken } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 import { AppModule } from './../src/app.module';
+import { RATE_LIMIT_COLLECTION_NAME } from './../src/platform/rate-limit/rate-limit.constants';
 
 describe('Notes (e2e)', () => {
   let app: INestApplication<App>;
@@ -17,6 +20,10 @@ describe('Notes (e2e)', () => {
       new ValidationPipe({ whitelist: true, transform: true }),
     );
     await app.init();
+    await app
+      .get<Connection>(getConnectionToken())
+      .collection(RATE_LIMIT_COLLECTION_NAME)
+      .deleteMany({});
   });
 
   afterEach(async () => {
@@ -89,11 +96,12 @@ describe('Notes (e2e)', () => {
     expect(res.status).toBe(400);
   });
 
-  it('returns 429 with Retry-After after 10 creates from one IP', async () => {
-    for (let i = 0; i < 10; i++) {
-      await request(app.getHttpServer())
+  it('returns 429 with Retry-After after 60 creates from one IP', async () => {
+    for (let i = 0; i < 60; i++) {
+      const created = await request(app.getHttpServer())
         .post('/api/notes')
         .send({ text: 'hello', expiresInDays: 1, maxViews: 1 });
+      expect(created.status).toBe(201);
     }
     const res = await request(app.getHttpServer())
       .post('/api/notes')

@@ -71,3 +71,4 @@ NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/a
 - `ConfigModule` loads `.env.development` then `.env`.
 - Vars: MONGODB_URI, NOTE_DEFAULT_PASSPHRASE (required), PORT, NODE_ENV, LOG_LEVEL, TRUST_PROXY.
 - NOTE_DEFAULT_PASSPHRASE encrypts notes created without a user passphrase. Changing it makes those notes unreadable.
+- Rate limit on `POST /api/notes` (per IP, fixed window): `RATE_LIMIT_CREATE_MAX` (default 60) and `RATE_LIMIT_WINDOW_SECONDS` (default 60). Parsed in `src/platform/rate-limit/rate-limit.options.ts`; a value that is not a positive integer stops the app at boot with an error naming the variable.

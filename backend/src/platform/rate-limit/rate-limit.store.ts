@@ -1,11 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RateLimitDocument } from './rate-limit.schema';
-import {
-  RATE_LIMIT_CREATE_MAX,
-  RATE_LIMIT_WINDOW_SECONDS,
-} from './rate-limit.constants';
+import { RATE_LIMIT_OPTIONS, RateLimitOptions } from './rate-limit.options';
 import { RateLimitCheckResult } from './rate-limit.types';
 
 @Injectable()
@@ -15,6 +12,8 @@ export class RateLimitStore {
   constructor(
     @InjectModel(RateLimitDocument.name)
     private readonly model: Model<RateLimitDocument>,
+    @Inject(RATE_LIMIT_OPTIONS)
+    private readonly options: RateLimitOptions,
   ) {}
 
   async checkAndIncrement(
@@ -22,15 +21,13 @@ export class RateLimitStore {
     endpoint: string,
   ): Promise<RateLimitCheckResult> {
     const now = new Date();
+    const windowMs = this.options.windowSeconds * 1000;
     const windowStart = new Date(
-      Math.floor(now.getTime() / (RATE_LIMIT_WINDOW_SECONDS * 1000)) *
-        (RATE_LIMIT_WINDOW_SECONDS * 1000),
+      Math.floor(now.getTime() / windowMs) * windowMs,
     );
-    const expiresAt = new Date(
-      windowStart.getTime() + RATE_LIMIT_WINDOW_SECONDS * 1000,
-    );
+    const expiresAt = new Date(windowStart.getTime() + windowMs);
 
-    const max = RATE_LIMIT_CREATE_MAX;
+    const max = this.options.createMax;
 
     // Try to find existing window
     const existing = await this.model

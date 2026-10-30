@@ -5,22 +5,22 @@
 ### Requirement: Rate limit configuration
 
 The maximum number of `POST /api/notes` requests per IP in one window SHALL equal `RATE_LIMIT_CREATE_MAX`, and the window length in seconds SHALL equal `RATE_LIMIT_WINDOW_SECONDS`.
-When a variable is not set, the system SHALL use 10 for the maximum and 60 for the window.
+When a variable is not set, the system SHALL use 60 for the maximum and 60 for the window.
 When a variable is set to a value that is not a positive integer, the system SHALL NOT start, and it SHALL report the variable name in the error.
 
-Serves: reliable-test-runs, tunable-abuse-protection
+Serves: higher-default-limit, reliable-test-runs, tunable-abuse-protection
 
 #### Scenario: Defaults
 
 - **GIVEN** neither variable is set
-- **WHEN** one IP sends 11 `POST /api/notes` requests in one window
-- **THEN** the first 10 are processed normally
-- **AND** the 11th gets HTTP 429 with a `Retry-After` header
+- **WHEN** one IP sends 61 `POST /api/notes` requests in one window
+- **THEN** the first 60 are processed normally
+- **AND** the 61st gets HTTP 429 with a `Retry-After` header
 
 #### Scenario: Higher limit
 
-- **GIVEN** `RATE_LIMIT_CREATE_MAX` is `20`
-- **WHEN** one IP sends 20 `POST /api/notes` requests in one window
+- **GIVEN** `RATE_LIMIT_CREATE_MAX` is `70`
+- **WHEN** one IP sends 70 `POST /api/notes` requests in one window
 - **THEN** none of them gets HTTP 429
 
 #### Scenario: Lower limit
