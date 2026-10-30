@@ -29,8 +29,8 @@ export default function SobrePage() {
       <TrustSection title="O que o site faz" icon={IconFileText}>
         <p>
           O Nota Segura - BR permite enviar textos sensíveis, como senhas, códigos de acesso ou dados pessoais, por meio
-          de um link que se autodestrói. Você escreve a nota, escolhe por quantos dias ela fica disponível (de 1 a 7) e
-          quantas vezes ela pode ser aberta (de 1 a 10), e recebe um link para compartilhar.
+          de um link que se autodestrói. Você escreve a nota, escolhe por quantos dias ela fica disponível (de 1 a 30) e
+          quantas vezes ela pode ser aberta (de 1 a 50), e recebe um link para compartilhar.
         </p>
         <p>
           A nota é guardada criptografada. Se você definir uma frase secreta, ela entra na chave de criptografia e

@@ -75,7 +75,7 @@ export default function PrivacidadePage() {
         </p>
         <p>
           Quando a nota atinge o limite de visualizações, ela deixa de poder ser aberta. A nota criptografada é apagada
-          automaticamente do banco de dados na data de expiração escolhida, que é de no máximo 7 dias após a criação.
+          automaticamente do banco de dados na data de expiração escolhida, que é de no máximo 30 dias após a criação.
         </p>
       </TrustSection>
 
