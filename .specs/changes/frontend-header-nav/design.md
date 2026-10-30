@@ -10,13 +10,13 @@
 
 ### Decision: One list for the main menu
 
-**Chosen:** Add `NAV_LINKS` to `src/lib/site.ts`: `{ href: "/#como-funciona", label: "Como funciona" }` followed by the entries of `TRUST_PAGES`. The footer and the sitemap keep `TRUST_PAGES`.
+**Chosen:** Add `NAV_LINKS` to `src/lib/site.ts` with the entries of `TRUST_PAGES`. The footer and the sitemap keep `TRUST_PAGES`. On 2026-10-30 the user removed the entry "Como funciona" (`/#como-funciona`); the home page already has the hero button "Como Funciona!".
 
 **Rationale:** The owner adds editorial pages in one place later. The sitemap must not list an anchor URL.
 
 ### Decision: Client `SiteNav` inside the server header
 
-**Chosen:** `src/components/SiteNav.tsx` with `"use client"`. It reads `usePathname()` to set `aria-current="page"` on the link whose `href` equals the path (the "Como funciona" link is never current). It keeps `open` in `useState`. Layout:
+**Chosen:** `src/components/SiteNav.tsx` with `"use client"`. It reads `usePathname()` to set `aria-current="page"` on the link whose `href` equals the path . It keeps `open` in `useState`. Layout:
 
 - `sm` and up: `ul` with `hidden sm:flex`, inline links.
 - Below `sm`: `button` "Menu" with `sm:hidden`, `aria-expanded`, and `aria-controls="menu-principal"`; the `ul#menu-principal` renders as a vertical list below the header only when `open`.

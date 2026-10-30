@@ -24,4 +24,11 @@ describe("SiteFooter", () => {
     const { container } = render(<SiteFooter />);
     expect(container.textContent).toContain(String(new Date().getFullYear()));
   });
+
+  it("shows the logo", () => {
+    const { container } = render(<SiteFooter />);
+    const footer = container.querySelector("footer")!;
+    expect(footer.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(footer).toHaveTextContent("Nota Segura");
+  });
 });

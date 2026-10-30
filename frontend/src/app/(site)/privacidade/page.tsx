@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
 import TextLink from "@/components/TextLink";
-import { TrustPage, TrustSection } from "@/components/TrustPage";
+import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
+import {
+  IconClock,
+  IconCookie,
+  IconEyeOff,
+  IconFileText,
+  IconKey,
+  IconLock,
+  IconScale,
+  IconShield,
+  IconTrash,
+  IconUserOff,
+} from "@/components/icons";
 import { POLICY_UPDATED_AT } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -8,9 +20,33 @@ export const metadata: Metadata = {
   description: "Quais dados o Nota Segura - BR guarda, por quanto tempo, e como funcionam os cookies de publicidade.",
 };
 
+const HIGHLIGHTS: TrustHighlight[] = [
+  {
+    icon: IconKey,
+    title: "Nada em texto claro",
+    text: "Não guardamos o texto original, e a frase secreta nunca é armazenada em texto claro.",
+  },
+  {
+    icon: IconClock,
+    title: "IP só por 60 segundos",
+    text: "O endereço IP usado para limitar pedidos é apagado quando termina a janela de 60 segundos.",
+  },
+  {
+    icon: IconTrash,
+    title: "Apagado na expiração",
+    text: "A nota criptografada é apagada automaticamente na data de expiração.",
+  },
+];
+
 export default function PrivacidadePage() {
   return (
-    <TrustPage title="Política de Privacidade" updatedAt={POLICY_UPDATED_AT}>
+    <TrustPage
+      title="Política de Privacidade"
+      lead="Guardamos o mínimo e apagamos tudo no prazo."
+      icon={IconShield}
+      updatedAt={POLICY_UPDATED_AT}
+      highlights={HIGHLIGHTS}
+    >
       <TrustSection>
         <p>
           Esta política explica quais dados o Nota Segura - BR trata, por quanto tempo os guarda e quais são os seus
@@ -18,14 +54,14 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Sem conta e sem cadastro">
+      <TrustSection title="Sem conta e sem cadastro" icon={IconUserOff}>
         <p>
           O site não exige conta, cadastro, nome nem e-mail. Não sabemos quem cria nem quem lê as notas, e não
           associamos as notas a nenhuma pessoa.
         </p>
       </TrustSection>
 
-      <TrustSection title="O que guardamos sobre cada nota">
+      <TrustSection title="O que guardamos sobre cada nota" icon={IconLock} tone="mint">
         <p>
           Quando você cria uma nota, o texto é enviado ao nosso servidor e criptografado antes de ser armazenado. Não
           guardamos o texto original. Guardamos apenas a nota criptografada e os dados técnicos necessários para
@@ -44,7 +80,7 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Endereço IP e registros técnicos">
+      <TrustSection title="Endereço IP e registros técnicos" icon={IconEyeOff}>
         <p>
           Para limitar o número de pedidos e proteger o serviço contra abuso, guardamos o endereço IP do visitante, a
           ação pedida e um contador por janela de 60 segundos. Esse registro é apagado automaticamente quando a janela
@@ -57,7 +93,7 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Cookies e publicidade">
+      <TrustSection title="Cookies e publicidade" icon={IconCookie}>
         <p>
           O Nota Segura - BR não cria cookies próprios. Para manter o serviço gratuito, as páginas de conteúdo podem
           exibir anúncios do Google AdSense. A página que exibe uma nota não carrega anúncios.
@@ -76,7 +112,7 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Seus direitos pela LGPD">
+      <TrustSection title="Seus direitos pela LGPD" icon={IconScale}>
         <p>
           A Lei Geral de Proteção de Dados Pessoais (LGPD, Lei nº 13.709/2018) garante a você o direito de confirmar
           se tratamos dados seus, acessar esses dados, corrigi-los, pedir a anonimização, o bloqueio ou a eliminação,
@@ -90,7 +126,7 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Alterações">
+      <TrustSection title="Alterações" icon={IconFileText}>
         <p>
           Podemos atualizar esta política quando o serviço mudar. A data da última atualização aparece no topo desta
           página.

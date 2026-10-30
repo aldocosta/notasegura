@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`frontend-header-nav` proposed)
+Last reviewed: 2026-10-30 (`frontend-brand-and-trust-visuals` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -15,8 +15,13 @@ Delete this file when the remaining changes can apply and sync in any order.
 | `frontend-how-it-works-cta` | (none) |
 | `frontend-adsense-readiness` | `frontend-how-it-works-cta` applied |
 | `frontend-header-nav` | `frontend-adsense-readiness` applied |
+| `frontend-brand-and-trust-visuals` | `frontend-header-nav` applied |
 
 ## Reasons
+
+### `frontend-brand-and-trust-visuals`
+
+- **After `frontend-header-nav` (rework):** both edit `SiteHeader.tsx`. The menu update in `frontend-header-nav` lands first, so the logo does not rework the header twice.
 
 ### `frontend-header-nav`
 

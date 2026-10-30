@@ -10,13 +10,13 @@ The header must carry a main menu on every page, and the menu must work on mobil
 
 ### Story: find-pages-from-the-top
 
-As a visitor, I want a menu at the top of every page, so that I find how the site works, who runs it, and how it treats my data without scrolling to the bottom.
+As a visitor, I want a menu at the top of every page, so that I find who runs the site, and how it treats my data without scrolling to the bottom.
 
 ## Scope
 
 **In scope:**
 
-- A main menu in the header of every page with the links "Como funciona", "Sobre", "Privacidade", "Termos", and "Contato".
+- A main menu in the header of every page with the links "Sobre", "Privacidade", "Termos", and "Contato".
 - Inline links from 640px; a "Menu" button that opens and closes the list below 640px.
 - Marking of the current page.
 - Unit and E2E tests.
@@ -31,3 +31,7 @@ As a visitor, I want a menu at the top of every page, so that I find how the sit
 
 A client component `SiteNav` in the header reads one shared list of links.
 It uses the current path to mark the active link, and it holds the open state of the mobile menu.
+
+## Resolved Questions
+
+- 2026-10-30 Menu items: remove "Como funciona" from the main menu; the menu has "Sobre", "Privacidade", "Termos", and "Contato". The hero button "Como Funciona!" on the home page stays. Decided with the user.

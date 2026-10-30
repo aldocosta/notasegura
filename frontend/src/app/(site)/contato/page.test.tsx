@@ -22,4 +22,19 @@ describe("Contato", () => {
     const { container } = render(<ContatoPage />);
     expect(container.querySelector('a[href^="mailto:"]')).toBeNull();
   });
+
+  it("shows the Enviar e-mail button", () => {
+    vi.stubEnv("NEXT_PUBLIC_CONTACT_EMAIL", "contato@example.com");
+    render(<ContatoPage />);
+    expect(screen.getByRole("link", { name: "Enviar e-mail" })).toHaveAttribute(
+      "href",
+      "mailto:contato@example.com",
+    );
+  });
+
+  it("hides the button without an email", () => {
+    vi.stubEnv("NEXT_PUBLIC_CONTACT_EMAIL", undefined);
+    render(<ContatoPage />);
+    expect(screen.queryByRole("link", { name: "Enviar e-mail" })).toBeNull();
+  });
 });

@@ -28,9 +28,10 @@ afterEach(() => {
 });
 
 describe("SiteNav", () => {
-  it("renders the five links in order", () => {
+  it("renders the four links in order", () => {
     render(<SiteHeader />);
     const links = within(mainNav()).getAllByRole("link");
+    expect(links).toHaveLength(4);
     expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual(
       NAV_LINKS.map((l) => [l.label, l.href]),
     );
@@ -41,7 +42,7 @@ describe("SiteNav", () => {
     render(<SiteHeader />);
     const nav = within(mainNav());
     expect(nav.getByRole("link", { name: "Privacidade" })).toHaveAttribute("aria-current", "page");
-    for (const name of ["Como funciona", "Sobre", "Termos", "Contato"]) {
+    for (const name of ["Sobre", "Termos", "Contato"]) {
       expect(nav.getByRole("link", { name })).not.toHaveAttribute("aria-current");
     }
   });
