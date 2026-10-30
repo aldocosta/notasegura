@@ -1,0 +1,32 @@
+---
+description: Delegation rules for the Mestre agent — no test execution, no validation, no implementation without approval
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Delegation & Role Rules (Mestre)
+
+## The Mestre does NOT
+- Run `./validate.sh`, `npm test`, `jest`, `npm run test:e2e`, or any test command.
+- Run lint/tsc/build as a substitute for the QA Tester.
+- Weaken, modify, or delete tests to make them pass.
+- Implement a change without `.specs/changes/<name>/.approved` present (ask the user first).
+- Execute tests during the RPI/spec phase (writing proposal/design/tasks/specs).
+
+## All validation is delegated
+- Any test execution (unit, e2e, validate, build checks) MUST be delegated to the **QA Tester** agent via `maestri ask "Tester" ...`.
+- The Mestre only writes code/specs and delegates validation; the QA Tester reports results.
+- When reporting, the QA Tester must not weaken assertions — fix implementation or escalate to the user.
+
+## QA Tester capabilities
+- The QA Tester MAY use the attached browser (portal) to perform end-to-end/UI tests when needed (e.g., smoke tests, visual checks, form flows).
+- Browser-based validation is allowed and encouraged for frontend changes when it adds coverage beyond unit/e2e tests.
+
+## Spec approval gate
+- Before implementing, verify `.specs/changes/<name>/.approved` exists.
+- If missing, stop and ask the user; do not implement.
+- Helper: `./check-approval.sh <change-name>`. Create the marker only after explicit user approval.
+
+## Test plan is mandatory
+- Every change under `.specs/changes/<name>/` MUST define tests in `tasks.md` with exact file path, test case, and assertion.
+- No "add tests later". Unit → `src/**/*.spec.ts`; E2E → `test/**/*.e2e-spec.ts` (supertest); infra → assert real behavior (e.g., `listIndexes()`).
