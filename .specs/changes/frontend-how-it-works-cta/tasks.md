@@ -27,3 +27,15 @@
 ## Validation (Tester)
 - [x] `cd frontend && npm run lint && npx tsc --noEmit && npm test && npm run build`
 - [x] `cd frontend && npx playwright test e2e/how-it-works-cta.spec.ts e2e/smoke.spec.ts`
+
+## Update 2026-10-30 (Frontend)
+- [x] `frontend/src/app/(site)/page.tsx`: move the `#como-funciona` section above the `#criar-nota` section. Change no content or class.
+- [x] `frontend/src/app/(site)/page.tsx`: change the CTA label to `Criar a primeira nota`.
+- [x] `frontend/src/app/(site)/page.test.tsx`: replace the name "Criar 1 Nota" with "Criar a primeira nota" in every test (requirement change, assertions otherwise unchanged).
+- [x] `frontend/src/app/(site)/page.test.tsx`: add `it('places Como funciona before the form')` — `document.getElementById('como-funciona').compareDocumentPosition(document.getElementById('criar-nota'))` has the bit `Node.DOCUMENT_POSITION_FOLLOWING`.
+- [x] `frontend/e2e/how-it-works-cta.spec.ts`: replace the name "Criar 1 Nota" with "Criar a primeira nota"; rename the first test to `'"Criar a primeira nota" scrolls to the create note form'`.
+- [x] `frontend/e2e/how-it-works-cta.spec.ts`: add `test('Como funciona is above the form')` — at 375 x 812 and at 1280 x 800, the bounding box `y` of `#como-funciona` is smaller than that of `#criar-nota`.
+
+## Validation of the update (Tester)
+- [x] `cd frontend && npm run lint && npx tsc --noEmit && npm test && npm run build`
+- [x] `cd frontend && npx playwright test e2e/how-it-works-cta.spec.ts e2e/header-nav.spec.ts e2e/brand-and-trust-visuals.spec.ts e2e/adsense-readiness.spec.ts`, then `e2e/smoke.spec.ts e2e/comprehensive.spec.ts` with backend and Mongo, started at second 55 to 57.

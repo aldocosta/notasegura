@@ -1,18 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test('"Criar 1 Nota" scrolls back to the create note form', async ({ page }) => {
+test('"Criar a primeira nota" scrolls to the create note form', async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Como Funciona!" }).click();
   await expect(page.locator("#como-funciona")).toBeInViewport();
-  await page.getByRole("link", { name: "Criar 1 Nota" }).click();
+  await page.getByRole("link", { name: "Criar a primeira nota" }).click();
   await expect(page.locator("#criar-nota")).toBeInViewport();
   await expect(page.getByRole("textbox", { name: "Texto da nota" })).toBeFocused();
 });
 
-test('"Criar 1 Nota" is full width on mobile', async ({ page }) => {
+test('"Criar a primeira nota" is full width on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");
-  const link = page.getByRole("link", { name: "Criar 1 Nota" });
+  const link = page.getByRole("link", { name: "Criar a primeira nota" });
   const box = await link.boundingBox();
   expect(box).not.toBeNull();
   const parentContentWidth = await link.evaluate((el) => {
@@ -23,10 +23,25 @@ test('"Criar 1 Nota" is full width on mobile', async ({ page }) => {
   expect(Math.abs(box!.width - parentContentWidth)).toBeLessThanOrEqual(2);
 });
 
-test('"Criar 1 Nota" is reachable by keyboard', async ({ page }) => {
+test('"Criar a primeira nota" is reachable by keyboard', async ({ page }) => {
   await page.goto("/");
-  const link = page.getByRole("link", { name: "Criar 1 Nota" });
+  const link = page.getByRole("link", { name: "Criar a primeira nota" });
   await link.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("textbox", { name: "Texto da nota" })).toBeFocused();
+});
+
+test("Como funciona is above the form", async ({ page }) => {
+  for (const viewport of [
+    { width: 375, height: 812 },
+    { width: 1280, height: 800 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const howItWorks = await page.locator("#como-funciona").boundingBox();
+    const form = await page.locator("#criar-nota").boundingBox();
+    expect(howItWorks, `${viewport.width}px`).not.toBeNull();
+    expect(form, `${viewport.width}px`).not.toBeNull();
+    expect(howItWorks!.y, `${viewport.width}px`).toBeLessThan(form!.y);
+  }
 });

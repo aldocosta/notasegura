@@ -19,20 +19,27 @@ describe("Home - Como funciona CTA", () => {
     vi.clearAllMocks();
   });
 
-  it('renders the "Criar 1 Nota" link inside the "Como funciona" section', () => {
+  it('renders the "Criar a primeira nota" link inside the "Como funciona" section', () => {
     const { container } = render(<Home />);
     const section = container.querySelector<HTMLElement>("#como-funciona");
     expect(section).not.toBeNull();
-    const link = within(section!).getByRole("link", { name: "Criar 1 Nota" });
+    const link = within(section!).getByRole("link", { name: "Criar a primeira nota" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "#criar-nota");
   });
 
-  it('places "Criar 1 Nota" as the last interactive element of the card', () => {
+  it('places "Criar a primeira nota" as the last interactive element of the card', () => {
     const { container } = render(<Home />);
     const interactive = container.querySelectorAll("#como-funciona a, #como-funciona button");
     expect(interactive.length).toBeGreaterThan(0);
-    expect(interactive[interactive.length - 1]).toHaveTextContent("Criar 1 Nota");
+    expect(interactive[interactive.length - 1]).toHaveTextContent("Criar a primeira nota");
+  });
+
+  it("places Como funciona before the form", () => {
+    render(<Home />);
+    const howItWorks = document.getElementById("como-funciona")!;
+    const form = document.getElementById("criar-nota")!;
+    expect(howItWorks.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("has a #criar-nota section containing the create note form", () => {
@@ -42,17 +49,17 @@ describe("Home - Como funciona CTA", () => {
     expect(section).toContainElement(screen.getByRole("heading", { name: "Criar uma nota" }));
   });
 
-  it('scrolls smoothly to the form when "Criar 1 Nota" is clicked', () => {
+  it('scrolls smoothly to the form when "Criar a primeira nota" is clicked', () => {
     render(<Home />);
-    fireEvent.click(screen.getByRole("link", { name: "Criar 1 Nota" }));
+    fireEvent.click(screen.getByRole("link", { name: "Criar a primeira nota" }));
     expect(scrollIntoView).toHaveBeenCalledTimes(1);
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
     expect(scrollIntoView.mock.contexts[0]).toBe(document.getElementById("criar-nota"));
   });
 
-  it('focuses the note textarea after clicking "Criar 1 Nota"', () => {
+  it('focuses the note textarea after clicking "Criar a primeira nota"', () => {
     render(<Home />);
-    fireEvent.click(screen.getByRole("link", { name: "Criar 1 Nota" }));
+    fireEvent.click(screen.getByRole("link", { name: "Criar a primeira nota" }));
     expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Texto da nota" }));
   });
 
