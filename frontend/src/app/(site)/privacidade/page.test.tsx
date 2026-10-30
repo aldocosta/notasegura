@@ -21,6 +21,13 @@ describe("Política de Privacidade", () => {
     );
   });
 
+  it("states the 30-day maximum", () => {
+    const { container } = render(<PrivacidadePage />);
+    const text = container.textContent ?? "";
+    expect(text).toContain("no máximo 30 dias após a criação");
+    expect(text).not.toContain("7 dias");
+  });
+
   it("discloses data handling", () => {
     const { container } = render(<PrivacidadePage />);
     const text = container.textContent ?? "";

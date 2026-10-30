@@ -64,7 +64,7 @@ export default function Home() {
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">1</span>
               <div>
                 <p className="font-semibold text-ink">Você escreve a nota</p>
-                <p className="text-muted">Digite o segredo, escolha dias de validade (1-7) e quantas vezes pode ser aberto (1-10). Pode adicionar uma frase secreta opcional.</p>
+                <p className="text-muted">Digite o segredo, escolha dias de validade (1-30) e quantas vezes pode ser aberto (1-50). Pode adicionar uma frase secreta opcional.</p>
               </div>
             </li>
             <li className="flex gap-3">
@@ -129,22 +129,22 @@ export default function Home() {
             />
             <div className="grid grid-cols-2 gap-3">
               <label className="text-sm">
-                <span className="mb-1 block text-muted">Expiração (dias 1-7)</span>
+                <span className="mb-1 block text-muted">Expiração (dias 1-30)</span>
                 <input
                   type="number"
                   min={1}
-                  max={7}
+                  max={30}
                   value={days}
                   onChange={(e) => setDays(Number(e.target.value))}
                   className="w-full rounded border border-hairline-strong bg-canvas p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="text-sm">
-                <span className="mb-1 block text-muted">Máximo de visualizações (1-10)</span>
+                <span className="mb-1 block text-muted">Máximo de visualizações (1-50)</span>
                 <input
                   type="number"
                   min={1}
-                  max={10}
+                  max={50}
                   value={views}
                   onChange={(e) => setViews(Number(e.target.value))}
                   className="w-full rounded border border-hairline-strong bg-canvas p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"

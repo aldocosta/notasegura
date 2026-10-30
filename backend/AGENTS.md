@@ -26,7 +26,7 @@ Use cases:
 
 Error contract: 400 validation, 404 not found, 410 expired/consumed, 401 passphrase required/invalid.
 
-Constraints: expiresInDays 1-7, maxViews 1-10. Passphrase optional, part of encryption key (never stored in clear).
+Constraints: expiresInDays 1-30, maxViews 1-50. Passphrase optional, part of encryption key (never stored in clear).
 
 ## Node version
 - Use Node v24.13.0 (latest installed): `nvm use v24.13.0` (Node >=22 required; @nestjs/config v12 is ESM-only).
@@ -71,3 +71,4 @@ NestJS 11, Mongoose/MongoDB, TypeScript. Clean architecture (use cases + ports/a
 - `ConfigModule` loads `.env.development` then `.env`.
 - Vars: MONGODB_URI, NOTE_DEFAULT_PASSPHRASE (required), PORT, NODE_ENV, LOG_LEVEL, TRUST_PROXY.
 - NOTE_DEFAULT_PASSPHRASE encrypts notes created without a user passphrase. Changing it makes those notes unreadable.
+- Rate limit on `POST /api/notes` (per IP, fixed window): `RATE_LIMIT_CREATE_MAX` (default 60) and `RATE_LIMIT_WINDOW_SECONDS` (default 60). Parsed in `src/platform/rate-limit/rate-limit.options.ts`; a value that is not a positive integer stops the app at boot with an error naming the variable.

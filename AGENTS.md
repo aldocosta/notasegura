@@ -58,6 +58,6 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 
 - **Delegação de validação**: O Mestre (este agente) não executa `./validate.sh`, testes ou E2E diretamente. Toda validação é delegada ao agente **QA Tester**, que reporta o resultado.
 
-- Expiry constraints: 1–7 days, 1–10 views.
+- Expiry constraints: 1–30 days, 1–50 views.
 - Optional passphrase is part of encryption key (never stored in clear).
 - Tessl skills `sdd` and `prd` installed (see `tessl.json`).

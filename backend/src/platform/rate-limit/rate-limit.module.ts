@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { RateLimitDocument, RateLimitSchema } from './rate-limit.schema';
 import { RateLimitStore } from './rate-limit.store';
 import { RateLimitGuard } from './rate-limit.guard';
+import {
+  RATE_LIMIT_OPTIONS,
+  parseRateLimitOptions,
+} from './rate-limit.options';
 
 @Module({
   imports: [
@@ -12,6 +17,12 @@ import { RateLimitGuard } from './rate-limit.guard';
     ]),
   ],
   providers: [
+    {
+      provide: RATE_LIMIT_OPTIONS,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =>
+        parseRateLimitOptions((key) => config.get<string>(key)),
+    },
     RateLimitStore,
     {
       provide: APP_GUARD,

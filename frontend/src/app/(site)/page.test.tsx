@@ -63,6 +63,31 @@ describe("Home - Como funciona CTA", () => {
     expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Texto da nota" }));
   });
 
+  it("limits the days input to 1-30", () => {
+    render(<Home />);
+    const input = screen.getByLabelText(/Expiração/);
+    expect(input).toHaveAttribute("min", "1");
+    expect(input).toHaveAttribute("max", "30");
+    expect(input.closest("label")).toHaveTextContent("1-30");
+  });
+
+  it("limits the views input to 1-50", () => {
+    render(<Home />);
+    const input = screen.getByLabelText(/Máximo de visualizações/);
+    expect(input).toHaveAttribute("min", "1");
+    expect(input).toHaveAttribute("max", "50");
+    expect(input.closest("label")).toHaveTextContent("1-50");
+  });
+
+  it("states the new limits in Como funciona", () => {
+    render(<Home />);
+    const text = document.getElementById("como-funciona")!.textContent ?? "";
+    expect(text).toContain("(1-30)");
+    expect(text).toContain("(1-50)");
+    expect(text).not.toContain("(1-7)");
+    expect(text).not.toContain("(1-10)");
+  });
+
   it('keeps "Como Funciona!" scrolling to #como-funciona', () => {
     render(<Home />);
     fireEvent.click(screen.getByRole("link", { name: "Como Funciona!" }));

@@ -38,8 +38,10 @@ test.describe("API business rules", () => {
   test("validation errors 400", async ({ request }) => {
     const badDays = await request.post(`${API}/api/notes`, { data: { text: "x", expiresInDays: 0, maxViews: 1 } });
     expect(badDays.status()).toBe(400);
-    const badViews = await request.post(`${API}/api/notes`, { data: { text: "x", expiresInDays: 1, maxViews: 11 } });
+    const badViews = await request.post(`${API}/api/notes`, { data: { text: "x", expiresInDays: 1, maxViews: 51 } });
     expect(badViews.status()).toBe(400);
+    const badDaysMax = await request.post(`${API}/api/notes`, { data: { text: "x", expiresInDays: 31, maxViews: 1 } });
+    expect(badDaysMax.status()).toBe(400);
     const missingText = await request.post(`${API}/api/notes`, { data: { expiresInDays: 1, maxViews: 1 } });
     expect(missingText.status()).toBe(400);
   });
