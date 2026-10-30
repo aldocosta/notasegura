@@ -29,9 +29,12 @@ jobs:
       - id: meta
         env:
           SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          DROPLET_HOST: ${{ secrets.DROPLET_HOST }}
+          SITE_ADDRESS_OVERRIDE: ${{ vars.SITE_ADDRESS }}
         run: |
           echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
           echo "tag=$SHA" >> "$GITHUB_OUTPUT"
+          echo "site_url=https://${SITE_ADDRESS_OVERRIDE:-${DROPLET_HOST//./-}.sslip.io}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -55,6 +58,10 @@ jobs:
         with:
           context: ./frontend
           push: true
+          build-args: |
+            NEXT_PUBLIC_SITE_URL=${{ steps.meta.outputs.site_url }}
+            NEXT_PUBLIC_ADSENSE_CLIENT=${{ vars.ADSENSE_CLIENT }}
+            NEXT_PUBLIC_CONTACT_EMAIL=${{ vars.CONTACT_EMAIL || 'aldocostasantos@gmail.com' }}
           tags: |
             ghcr.io/${{ steps.meta.outputs.owner }}/notasegura-frontend:${{ steps.meta.outputs.tag }}
             ghcr.io/${{ steps.meta.outputs.owner }}/notasegura-frontend:latest

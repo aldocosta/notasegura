@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-25 (`backend-modular-refactor` proposed)
+Last reviewed: 2026-10-30 (`backend-invalid-note-id` and `rate-limit-configurable` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -12,8 +12,14 @@ Delete this file when the remaining changes can apply and sync in any order.
 | Change | Starts after |
 | --- | --- |
 | `backend-modular-refactor` | `backend-safenote` applied, `backend-logging` applied, `persist-application-logs` applied, `rate-limiting` applied |
+| `frontend-how-it-works-cta` | (none) |
+| `frontend-adsense-readiness` | `frontend-how-it-works-cta` applied |
 
 ## Reasons
+
+### `frontend-adsense-readiness`
+
+- **After `frontend-how-it-works-cta` (rework):** this change moves `frontend/src/app/page.tsx` and `frontend/src/app/page.test.tsx` into `frontend/src/app/(site)/` and removes the inline header. Applying `frontend-how-it-works-cta` after the move would recreate the files at the old path.
 
 ### `backend-modular-refactor`
 
@@ -33,3 +39,5 @@ Delete this file when the remaining changes can apply and sync in any order.
 - `backend-env-config`
 - `frontend-safenote`
 - `frontend-feature`
+- `backend-invalid-note-id`
+- `rate-limit-configurable`

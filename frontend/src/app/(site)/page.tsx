@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createNote } from "@/lib/api";
 
 export default function Home() {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [days, setDays] = useState(1);
@@ -32,13 +33,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-canvas text-body">
-      <header className="border-b border-hairline">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <span className="text-lg font-bold text-primary">Nota Segura - BR</span>
-        </div>
-      </header>
-
+    <main className="flex-1 bg-canvas text-body">
       <section className="bg-gradient-to-b from-primary to-primary-deep px-4 py-12 text-on-primary sm:py-16">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-bold sm:text-4xl">Compartilhe textos sensíveis com segurança</h1>
@@ -58,11 +53,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      <section id="criar-nota" className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
         <div className="rounded border border-hairline-strong bg-mint-50 p-5 sm:p-7">
           <h2 className="text-lg font-bold text-ink sm:text-xl">Criar uma nota</h2>
           <form onSubmit={submit} className="mt-4 space-y-4">
             <textarea
+              ref={textareaRef}
+              aria-label="Texto da nota"
               required
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -158,6 +155,17 @@ export default function Home() {
           <p className="mt-4 rounded border border-hairline-strong bg-mint-50 p-3 text-xs text-muted">
             Dica: use frases secretas para notas muito sensíveis. Nós nunca armazenamos a frase em texto claro, então se você esquecer, não há recuperação.
           </p>
+          <a
+            href="#criar-nota"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("criar-nota")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              textareaRef.current?.focus({ preventScroll: true });
+            }}
+            className="mt-5 block w-full rounded-xs bg-primary p-4 text-center text-sm font-bold text-on-primary hover:bg-primary-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:inline-block sm:w-auto"
+          >
+            Criar 1 Nota
+          </a>
         </div>
       </section>
 

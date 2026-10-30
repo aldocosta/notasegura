@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { getNote } from "@/lib/api";
 
 export default function NoteViewClient({ id }: { id: string }) {
@@ -36,12 +35,7 @@ export default function NoteViewClient({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <main className="min-h-screen bg-canvas text-body">
-      <header className="border-b border-hairline">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/" className="text-lg font-bold text-primary">Nota Segura - BR</Link>
-        </div>
-      </header>
+    <main className="flex-1 bg-canvas text-body">
       <section className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
         <div className="rounded border border-hairline-strong bg-mint-50 p-5 sm:p-7">
           <h2 className="text-lg font-bold text-ink sm:text-xl">Nota</h2>

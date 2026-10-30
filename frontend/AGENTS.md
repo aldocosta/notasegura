@@ -17,7 +17,18 @@ Frontend must follow `docs/DESIGN-nerdwallet.md` (colors, typography, components
 - Minimalist and responsive.
 - Reserve space for future ads/add-ons, max 8% of screen area.
 - Avoid clutter.
-" > /home/aldo/Documents/Projects/Maestri/notasegura/frontend/AGENTS.md && echo ok
+
+## Environment
+
+Build-time values: Next.js inlines `NEXT_PUBLIC_*` variables during `next build`, so changing them requires a rebuild. In Docker they are build args (`frontend/Dockerfile`, `docker-compose.yml` `frontend.build.args`). See `.env.example`; readers live in `src/lib/site.ts`.
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Public site URL used by `robots.txt` and `sitemap.xml`. Default `http://localhost:3005`. |
+| `NEXT_PUBLIC_ADSENSE_CLIENT` | AdSense client ID (`ca-pub-` + 16 digits). Enables the AdSense script and `google-adsense-account` meta on `(site)` pages and serves `/ads.txt`. Invalid or empty disables both. |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Contact email shown as a `mailto:` link on `/contato`. Empty hides the link. |
+
+AdSense code only loads in `src/app/(site)/layout.tsx`; the note page (`/n/[id]`) and the 404 page stay outside that group and must never load it.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
