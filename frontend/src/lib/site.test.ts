@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  NAV_LINKS,
   TRUST_PAGES,
   getAdsenseClient,
   getAdsensePublisherId,
@@ -49,5 +50,15 @@ describe("site config", () => {
   it("lists the four trust pages", () => {
     expect(TRUST_PAGES.map((p) => p.href)).toEqual(["/sobre", "/privacidade", "/termos", "/contato"]);
     expect(TRUST_PAGES.map((p) => p.label)).toEqual(["Sobre", "Privacidade", "Termos", "Contato"]);
+  });
+
+  it("lists the main menu links", () => {
+    expect(NAV_LINKS.map((l) => [l.label, l.href])).toEqual([
+      ["Como funciona", "/#como-funciona"],
+      ["Sobre", "/sobre"],
+      ["Privacidade", "/privacidade"],
+      ["Termos", "/termos"],
+      ["Contato", "/contato"],
+    ]);
   });
 });

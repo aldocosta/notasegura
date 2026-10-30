@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`backend-invalid-note-id` and `rate-limit-configurable` proposed)
+Last reviewed: 2026-10-30 (`frontend-header-nav` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -14,8 +14,13 @@ Delete this file when the remaining changes can apply and sync in any order.
 | `backend-modular-refactor` | `backend-safenote` applied, `backend-logging` applied, `persist-application-logs` applied, `rate-limiting` applied |
 | `frontend-how-it-works-cta` | (none) |
 | `frontend-adsense-readiness` | `frontend-how-it-works-cta` applied |
+| `frontend-header-nav` | `frontend-adsense-readiness` applied |
 
 ## Reasons
+
+### `frontend-header-nav`
+
+- **After `frontend-adsense-readiness` (capability):** the menu goes into `SiteHeader` and reuses `TRUST_PAGES`, which `frontend-adsense-readiness` adds.
 
 ### `frontend-adsense-readiness`
 
