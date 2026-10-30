@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import {
-  IconClock,
   IconCookie,
   IconEyeOff,
   IconFileText,
@@ -27,9 +26,9 @@ const HIGHLIGHTS: TrustHighlight[] = [
     text: "Não guardamos o texto original, e a frase secreta nunca é armazenada em texto claro.",
   },
   {
-    icon: IconClock,
-    title: "IP só por 60 segundos",
-    text: "O endereço IP usado para limitar pedidos é apagado quando termina a janela de 60 segundos.",
+    icon: IconCookie,
+    title: "Sem cookies próprios",
+    text: "O Nota Segura - BR não cria cookies próprios.",
   },
   {
     icon: IconTrash,
@@ -80,12 +79,7 @@ export default function PrivacidadePage() {
         </p>
       </TrustSection>
 
-      <TrustSection title="Endereço IP e registros técnicos" icon={IconEyeOff}>
-        <p>
-          Para limitar o número de pedidos e proteger o serviço contra abuso, guardamos o endereço IP do visitante, a
-          ação pedida e um contador por janela de 60 segundos. Esse registro é apagado automaticamente quando a janela
-          termina.
-        </p>
+      <TrustSection title="Registros técnicos" icon={IconEyeOff}>
         <p>
           Também guardamos registros técnicos de funcionamento: o método e a rota de cada pedido, o código de
           resposta, o tempo de resposta e, em caso de falha, a mensagem de erro. Esses registros não incluem o
