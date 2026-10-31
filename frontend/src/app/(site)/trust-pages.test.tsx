@@ -1,9 +1,10 @@
 import type { ComponentType } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import Sobre from "./sobre/page";
-import Privacidade from "./privacidade/page";
-import Contato from "./contato/page";
+import type { Metadata } from "next";
+import Sobre, { metadata as sobreMetadata } from "./sobre/page";
+import Privacidade, { metadata as privacidadeMetadata } from "./privacidade/page";
+import Contato, { metadata as contatoMetadata } from "./contato/page";
 
 const PAGES: Array<[string, ComponentType]> = [
   ["Sobre", Sobre],
@@ -45,6 +46,32 @@ describe("trust pages", () => {
     for (const svg of svgs) {
       expect(svg).toHaveAttribute("aria-hidden", "true");
     }
+  });
+
+  it.each<[string, Metadata, string, string]>([
+    [
+      "/sobre",
+      sobreMetadata,
+      "Sobre",
+      "O que é o Nota Segura - BR, quem mantém o serviço e como ele continua gratuito.",
+    ],
+    [
+      "/privacidade",
+      privacidadeMetadata,
+      "Política de Privacidade e Termos de Uso",
+      "Quais dados o Nota Segura - BR guarda, como funcionam os cookies de publicidade e as regras de uso do serviço.",
+    ],
+    [
+      "/contato",
+      contatoMetadata,
+      "Contato",
+      "Como falar com o Nota Segura - BR para denunciar abuso ou fazer pedidos de privacidade.",
+    ],
+  ])("sets the canonical URL of %s", (path, metadata, title, description) => {
+    expect(metadata.alternates?.canonical).toBe(path);
+    expect(metadata.openGraph).toMatchObject({ type: "website" });
+    expect(metadata.title).toBe(title);
+    expect(metadata.description).toBe(description);
   });
 
   it("shows an icon next to every h2 and h3 on /privacidade", () => {

@@ -1,3 +1,7 @@
+import { GUIDES_PATH } from "@/lib/guides/href";
+
+export { GUIDES_PATH };
+
 const DEFAULT_SITE_URL = "http://localhost:3005";
 const ADSENSE_CLIENT_PATTERN = /^ca-pub-\d{16}$/;
 
@@ -12,7 +16,11 @@ export const TRUST_PAGES = [
 
 export const ALGORITHMS_PATH = "/algoritmos";
 
-export const NAV_LINKS = [{ href: ALGORITHMS_PATH, label: "Algoritmos" }, ...TRUST_PAGES] as const;
+export const NAV_LINKS = [
+  { href: ALGORITHMS_PATH, label: "Algoritmos" },
+  { href: GUIDES_PATH, label: "Guias" },
+  ...TRUST_PAGES,
+] as const;
 
 export function getSiteUrl(): string {
   const url = process.env.NEXT_PUBLIC_SITE_URL?.trim();

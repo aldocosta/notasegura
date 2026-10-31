@@ -62,4 +62,5 @@ export const aesGcm: Article = {
     },
   ],
   related: ["aes-cbc", "rsa-oaep"],
+  publishedAt: "2026-10-30",
 };

@@ -56,4 +56,5 @@ export const cesar: Article = {
     },
   ],
   related: ["vigenere", "base64"],
+  publishedAt: "2026-10-30",
 };

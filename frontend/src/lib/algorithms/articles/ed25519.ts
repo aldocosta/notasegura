@@ -56,4 +56,5 @@ export const ed25519: Article = {
     },
   ],
   related: ["ecdsa", "sha-512"],
+  publishedAt: "2026-10-30",
 };

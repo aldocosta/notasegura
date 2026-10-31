@@ -28,13 +28,38 @@ afterEach(() => {
 });
 
 describe("SiteNav", () => {
-  it("renders the four links in order", () => {
+  it("renders the five links in order", () => {
     render(<SiteHeader />);
     const links = within(mainNav()).getAllByRole("link");
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(5);
     expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual(
       NAV_LINKS.map((l) => [l.label, l.href]),
     );
+    expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual([
+      ["Algoritmos", "/algoritmos"],
+      ["Guias", "/guias"],
+      ["Sobre", "/sobre"],
+      ["Privacidade e Termos", "/privacidade"],
+      ["Contato", "/contato"],
+    ]);
+  });
+
+  it("marks Guias on the guide index", () => {
+    mockedUsePathname.mockReturnValue("/guias");
+    render(<SiteHeader />);
+    const nav = within(mainNav());
+    expect(nav.getByRole("link", { name: "Guias" })).toHaveAttribute("aria-current", "page");
+    for (const name of ["Algoritmos", "Sobre", "Privacidade e Termos", "Contato"]) {
+      expect(nav.getByRole("link", { name })).not.toHaveAttribute("aria-current");
+    }
+  });
+
+  it("marks nothing on a guide page", () => {
+    mockedUsePathname.mockReturnValue("/guias/como-guardar-senhas");
+    render(<SiteHeader />);
+    for (const link of within(mainNav()).getAllByRole("link")) {
+      expect(link).not.toHaveAttribute("aria-current");
+    }
   });
 
   it("marks the current page", () => {
