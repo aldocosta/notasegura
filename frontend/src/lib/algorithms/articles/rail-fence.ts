@@ -56,4 +56,5 @@ export const railFence: Article = {
     },
   ],
   related: ["playfair", "cesar"],
+  publishedAt: "2026-10-31",
 };

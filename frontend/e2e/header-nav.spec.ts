@@ -4,6 +4,7 @@ const DESKTOP = { width: 1280, height: 800 };
 const MOBILE = { width: 375, height: 812 };
 const NAV_LINKS: Array<[string, string]> = [
   ["Algoritmos", "/algoritmos"],
+  ["Guias", "/guias"],
   ["Sobre", "/sobre"],
   ["Privacidade e Termos", "/privacidade"],
   ["Contato", "/contato"],
@@ -40,6 +41,27 @@ test("current page is marked", async ({ page }) => {
     "aria-current",
     "page",
   );
+});
+
+test("Guias is marked on the guide index", async ({ page }) => {
+  await page.goto("/guias");
+  await expect(mainNav(page).getByRole("link", { name: "Guias", exact: true })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  for (const [name] of NAV_LINKS.filter(([label]) => label !== "Guias")) {
+    await expect(mainNav(page).getByRole("link", { name, exact: true }), name).not.toHaveAttribute("aria-current");
+  }
+});
+
+test("mobile menu opens the guides", async ({ page }) => {
+  await page.setViewportSize(MOBILE);
+  await page.goto("/");
+  await menuButton(page).click();
+  await expect(menuButton(page)).toHaveAttribute("aria-expanded", "true");
+  await mainNav(page).getByRole("link", { name: "Guias", exact: true }).click();
+  await expect(page).toHaveURL(/\/guias$/);
+  await expect(menuButton(page)).toHaveAttribute("aria-expanded", "false");
 });
 
 test("menu has no Como funciona link", async ({ page }) => {

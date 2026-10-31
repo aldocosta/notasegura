@@ -1,16 +1,19 @@
-import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
 import SafetyBadge from "@/components/SafetyBadge";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
-import { IconFileText, IconGlobe, IconKey, IconLock } from "@/components/icons";
+import { IconFileText, IconGlobe, IconKey, IconLock, IconScale } from "@/components/icons";
 import { algorithmHref } from "@/lib/algorithms";
 import { algorithmsByCategory } from "@/lib/playground/categories";
+import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
+import { ALGORITHMS_PATH, GUIDES_PATH } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Algoritmos de criptografia",
   description:
     "Como funcionam AES, ChaCha20, RSA, SHA-256, HMAC, ECDSA, ECDH, PBKDF2, Base64 e cifras clássicas, e quais protegem um segredo.",
-};
+  path: ALGORITHMS_PATH,
+});
 
 const HIGHLIGHTS: TrustHighlight[] = [
   {
@@ -89,6 +92,23 @@ export default function AlgoritmosPage() {
           </section>
         ))}
       </TrustSection>
+
+      <TrustSection title="Guias e comparações" icon={IconScale}>
+        <p>
+          Quer comparar algoritmos ou saber o que fazer na prática? Os guias explicam qual algoritmo escolher e como
+          proteger senhas e mensagens.
+        </p>
+        <p>
+          <TextLink href={GUIDES_PATH}>Ver todos os guias</TextLink>
+        </p>
+      </TrustSection>
+
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Início", path: "/" },
+          { name: "Algoritmos", path: ALGORITHMS_PATH },
+        ])}
+      />
     </TrustPage>
   );
 }

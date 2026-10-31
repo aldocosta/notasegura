@@ -55,3 +55,6 @@ The share images use the `opengraph-image` file convention with `ImageResponse` 
 ## Resolved Questions
 
 - 2026-10-31 Scope: comparisons, practical guides, and technical SEO go in one change. Decided with the user.
+- 2026-10-31 Share images and Next.js 16: the dynamic image files move outside the `(site)` group, because a metadata route inside a route group gets a hash suffix; `pageMetadata` always sets `og:image`, because a page `openGraph` replaces the root one. The spec requirements do not change. Found during the implementation.
+- 2026-10-31 Menu: the five links do not fit in one line at 640px, so the inline menu starts at 768px and the "Menu" button covers the widths below. Delegated to the Mestre by the user.
+- 2026-10-31 Guide text: fix the factual imprecisions that the Tester found; leave the minor simplifications. Delegated to the Mestre by the user.

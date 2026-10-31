@@ -31,6 +31,37 @@ describe("TrustPage", () => {
     expect(hero).toHaveTextContent("Frase de abertura.");
   });
 
+  it("renders the breadcrumb", () => {
+    render(
+      <TrustPage
+        title="Título"
+        lead="Frase de abertura."
+        icon={IconShield}
+        breadcrumb={[{ name: "Início", href: "/" }, { name: "Algoritmos", href: "/algoritmos" }, { name: "Cifra de César" }]}
+        highlights={HIGHLIGHTS}
+      >
+        <p>Conteúdo.</p>
+      </TrustPage>,
+    );
+    const nav = within(screen.getByRole("navigation", { name: "Trilha de navegação" }));
+    const links = nav.getAllByRole("link");
+    expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual([
+      ["Início", "/"],
+      ["Algoritmos", "/algoritmos"],
+    ]);
+    const items = nav.getAllByRole("listitem");
+    expect(items).toHaveLength(3);
+    const last = nav.getByText("Cifra de César");
+    expect(last.closest("a")).toBeNull();
+    expect(last).toHaveAttribute("aria-current", "page");
+    expect(items[2]).toContainElement(last);
+  });
+
+  it("renders no breadcrumb without the prop", () => {
+    renderPage();
+    expect(screen.queryByRole("navigation", { name: "Trilha de navegação" })).toBeNull();
+  });
+
   it("renders one tile per highlight", () => {
     renderPage();
     const items = within(screen.getByRole("list", { name: "Destaques" })).getAllByRole("listitem");

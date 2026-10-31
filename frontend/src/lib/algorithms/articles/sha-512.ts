@@ -61,4 +61,5 @@ export const sha512: Article = {
     },
   ],
   related: ["sha-256", "hmac-sha-256"],
+  publishedAt: "2026-10-30",
 };

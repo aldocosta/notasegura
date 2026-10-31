@@ -56,4 +56,5 @@ export const atbash: Article = {
     },
   ],
   related: ["cesar", "rot13"],
+  publishedAt: "2026-10-31",
 };

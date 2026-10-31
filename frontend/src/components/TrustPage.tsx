@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import type { IconComponent } from "@/components/icons";
 import { LogoMark } from "@/components/Logo";
 
@@ -8,11 +9,38 @@ export type TrustHighlight = {
   text: string;
 };
 
+export type BreadcrumbItem = { name: string; href?: string };
+
+function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
+  return (
+    <nav aria-label="Trilha de navegação" className="mb-4 text-sm">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        {items.map((item, i) => (
+          <li key={item.name} className="flex items-center gap-2">
+            {i > 0 && <span aria-hidden="true">›</span>}
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="rounded-xs text-on-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary"
+              >
+                {item.name}
+              </Link>
+            ) : (
+              <span aria-current="page">{item.name}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 export function TrustPage({
   title,
   lead,
   icon: Icon,
   updatedAt,
+  breadcrumb,
   highlights,
   children,
 }: {
@@ -20,6 +48,7 @@ export function TrustPage({
   lead: string;
   icon: IconComponent;
   updatedAt?: string;
+  breadcrumb?: BreadcrumbItem[];
   highlights: TrustHighlight[];
   children: ReactNode;
 }) {
@@ -35,6 +64,7 @@ export function TrustPage({
           className="pointer-events-none absolute -right-12 top-1/2 hidden -translate-y-1/2 opacity-10 sm:block"
         />
         <div className="relative mx-auto max-w-3xl">
+          {breadcrumb && <Breadcrumb items={breadcrumb} />}
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-on-primary/15">
             <Icon className="h-7 w-7 text-on-primary" />
           </span>

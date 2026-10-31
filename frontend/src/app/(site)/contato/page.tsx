@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import { IconAlert, IconFileText, IconHeart, IconLock, IconMail, IconShield } from "@/components/icons";
+import { pageMetadata } from "@/lib/seo";
 import { getContactEmail } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contato",
   description: "Como falar com o Nota Segura - BR para denunciar abuso ou fazer pedidos de privacidade.",
-};
+  path: "/contato",
+});
 
 const HIGHLIGHTS: TrustHighlight[] = [
   { icon: IconAlert, title: "Denúncias de abuso", text: "Inclua o link da nota e uma descrição do problema." },

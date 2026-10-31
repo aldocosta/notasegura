@@ -117,6 +117,13 @@ describe("ARTICLES", () => {
     }
   });
 
+  it("has the publication date of the design", () => {
+    const LATER: AlgorithmId[] = ["hex", "rot13", "atbash", "playfair", "rail-fence", "enigma", "vernam"];
+    for (const id of IDS) {
+      expect(ARTICLES[id].publishedAt, id).toBe(LATER.includes(id) ? "2026-10-31" : "2026-10-30");
+    }
+  });
+
   it("matches the Enigma example", () => {
     const section = ARTICLES.enigma.sections.find((s) => s.title === "O que é")!;
     const text = section.paragraphs.join(" ");
@@ -144,6 +151,7 @@ describe("article helpers", () => {
       highlights: { kind: "três", safety: "quatro", key: "cinco" },
       sections: [{ title: "O que é", paragraphs: ["seis  sete"] }],
       related: ["vigenere", "base64"],
+      publishedAt: "2026-10-30",
     };
     expect(articleWordCount(article)).toBe(7);
   });

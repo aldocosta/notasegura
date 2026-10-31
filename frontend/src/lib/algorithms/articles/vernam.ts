@@ -56,4 +56,5 @@ export const vernam: Article = {
     },
   ],
   related: ["vigenere", "aes-gcm"],
+  publishedAt: "2026-10-31",
 };

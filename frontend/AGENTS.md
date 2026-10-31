@@ -24,11 +24,17 @@ Build-time values: Next.js inlines `NEXT_PUBLIC_*` variables during `next build`
 
 | Variable | Purpose |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | Public site URL used by `robots.txt` and `sitemap.xml`. Default `http://localhost:3005`. |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL used by `robots.txt`, `sitemap.xml`, `metadataBase` (canonical and Open Graph URLs), and the JSON-LD URLs. Default `http://localhost:3005`. |
 | `NEXT_PUBLIC_ADSENSE_CLIENT` | AdSense client ID (`ca-pub-` + 16 digits). Enables the AdSense script and `google-adsense-account` meta on `(site)` pages and serves `/ads.txt`. Invalid or empty disables both. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Contact email shown as a `mailto:` link on `/contato`. Empty hides the link. |
 
 Algorithm articles (`/algoritmos/<id>`) live as data in `src/lib/algorithms/articles/`, one file per playground algorithm; `src/lib/algorithms/index.test.ts` enforces their sections, length, and required facts.
+
+Guides (`/guias/<slug>`: comparisons and practical guides) live as data in `src/lib/guides/articles/`, one file per guide, listed in order in `GUIDES` (`src/lib/guides/index.ts`); `src/lib/guides/index.test.ts` enforces their sections, comparison tables, length, citations, and required facts. Guides state only the product facts of the backend (server-side AES-256-GCM over HTTPS, not end-to-end).
+
+SEO helpers live in `src/lib/seo.ts`: `siteMetadata` (root layout, `metadataBase` from `NEXT_PUBLIC_SITE_URL`), `pageMetadata` (canonical URL, Open Graph, Twitter on content pages), and the JSON-LD builders (`articleJsonLd`, `breadcrumbJsonLd`) rendered with `src/components/JsonLd.tsx`.
+
+Share images are generated with `ImageResponse` by `shareImage` (`src/lib/share-image.tsx`) in three `opengraph-image.tsx` files: `src/app/`, `src/app/algoritmos/[id]/`, and `src/app/guias/[slug]/`. The two dynamic ones stay outside the `(site)` group, because Next.js adds a hash suffix to metadata routes inside a route group; so the algorithm and guide pages pass their image to `pageMetadata` explicitly. Their colors come from `BRAND_COLORS` (`src/lib/brand.ts`), which `src/lib/brand.test.ts` keeps equal to the `--color-*` tokens of `globals.css`.
 
 AdSense code only loads in `src/app/(site)/layout.tsx`; the note page (`/n/[id]`) and the 404 page stay outside that group and must never load it.
 

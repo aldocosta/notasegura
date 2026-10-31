@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import { IconClock, IconFileText, IconGlobe, IconHeart, IconLock, IconUserOff } from "@/components/icons";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Sobre",
   description: "O que é o Nota Segura - BR, quem mantém o serviço e como ele continua gratuito.",
-};
+  path: "/sobre",
+});
 
 const HIGHLIGHTS: TrustHighlight[] = [
   { icon: IconUserOff, title: "Sem cadastro", text: "Não é preciso criar conta nem informar nome ou e-mail." },

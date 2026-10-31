@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { siteMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,13 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Nota Segura - BR",
-    template: "%s | Nota Segura - BR",
-  },
-  description: "Compartilhamento anônimo de textos criptografados e autodestrutivos."
-};
+export const metadata = siteMetadata();
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

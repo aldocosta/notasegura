@@ -57,4 +57,5 @@ export const playfair: Article = {
     },
   ],
   related: ["vigenere", "enigma"],
+  publishedAt: "2026-10-31",
 };

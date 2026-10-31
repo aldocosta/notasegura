@@ -41,15 +41,17 @@ A unit test reads `frontend/src/app/globals.css` and checks that each value equa
 export function siteMetadata(): Metadata;
 // { metadataBase: new URL(getSiteUrl()), title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
 //   description: "Compartilhamento anônimo de textos criptografados e autodestrutivos.",
-//   openGraph: { siteName: SITE_NAME, locale: "pt_BR", type: "website" },
-//   twitter: { card: "summary_large_image" } }
+//   openGraph: { siteName: SITE_NAME, locale: "pt_BR", type: "website", images: DEFAULT_SHARE_IMAGES },
+//   twitter: { card: "summary_large_image", images: DEFAULT_SHARE_IMAGES } }
+// DEFAULT_SHARE_IMAGES = [{ url: "/opengraph-image", width: 1200, height: 630, alt: SITE_NAME }], the same default as pageMetadata.
 
 export function pageMetadata(page: {
-  title: string; description: string; path: string; type?: "website" | "article";
+  title: string; description: string; path: string; type?: "website" | "article"; image?: string;
 }): Metadata;
+// const images = [{ url: image ?? "/opengraph-image", width: 1200, height: 630, alt: SITE_NAME }];
 // { title, description, alternates: { canonical: path },
-//   openGraph: { title, description, url: path, siteName: SITE_NAME, locale: "pt_BR", type: type ?? "website" },
-//   twitter: { card: "summary_large_image", title, description } }
+//   openGraph: { title, description, url: path, siteName: SITE_NAME, locale: "pt_BR", type: type ?? "website", images },
+//   twitter: { card: "summary_large_image", title, description, images } }
 
 export function absoluteUrl(path: string): string; // getSiteUrl() + path; "/" gives getSiteUrl()
 
@@ -73,6 +75,8 @@ export function jsonLdHtml(data: Record<string, unknown>): string; // JSON.strin
 `frontend/src/components/JsonLd.tsx` renders `<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(data) }} />`.
 `frontend/src/app/layout.tsx` uses `export const metadata = siteMetadata()`.
 Next.js merges `openGraph` shallowly, so `pageMetadata` always returns the full `openGraph` object.
+A page `openGraph` without `images` replaces the root `openGraph`, and Next.js adds a file-based image only in the segment of the file (`mergeStaticMetadata`). So `pageMetadata` always sets `images`: the site image `/opengraph-image` by default, and the page image on the algorithm and guide pages.
+`siteMetadata` also sets `images`, so the pages without `pageMetadata` (the home, the note page, the 404 page) use `metadataBase` too. In `next dev`, a file-based image URL uses `localhost` and ignores `metadataBase` (`getSocialImageMetadataBaseFallback` in `next/dist/lib/metadata/resolvers/resolve-url.js`), and Next.js does not add the file image when the metadata of the same segment sets `openGraph.images` (`mergeStaticMetadata`).
 
 **Rationale:** Pure functions are easy to test, and one helper keeps the canonical URL, Open Graph, and Twitter values equal on every page.
 
@@ -93,8 +97,10 @@ The home page, the note page, and the 404 page keep the root metadata (`siteMeta
 **Chosen:** Three `opengraph-image.tsx` files. Each one exports `alt = "Nota Segura - BR"`, `size = { width: 1200, height: 630 }`, `contentType = "image/png"`, and a default function that returns `shareImage({ eyebrow, title })` from `frontend/src/lib/share-image.tsx`:
 
 - `frontend/src/app/opengraph-image.tsx`: eyebrow "Notas anônimas e autodestrutivas", title "Compartilhe textos sensíveis com segurança". It applies to every route without its own image.
-- `frontend/src/app/(site)/algoritmos/[id]/opengraph-image.tsx`: eyebrow `algorithm.kind`, title `algorithm.name`. It exports `generateStaticParams` with the same ids as the page.
-- `frontend/src/app/(site)/guias/[slug]/opengraph-image.tsx`: eyebrow `guide.kind`, title `guide.title`. It exports `generateStaticParams` with the same slugs as the page.
+- `frontend/src/app/algoritmos/[id]/opengraph-image.tsx`: eyebrow `algorithm.kind`, title `algorithm.name`. It exports `generateStaticParams` with the same ids as the page.
+- `frontend/src/app/guias/[slug]/opengraph-image.tsx`: eyebrow `guide.kind`, title `guide.title`. It exports `generateStaticParams` with the same slugs as the page.
+
+The two dynamic image files are outside the `(site)` group. Next.js 16 adds a hash suffix to a metadata route inside a route group (`getMetadataRouteSuffix` in `next/dist/lib/metadata/get-metadata-route.js`), for example `/guias/<slug>/opengraph-image-11a0wr`. Outside the group, the URLs are `/algoritmos/<id>/opengraph-image` and `/guias/<slug>/opengraph-image`. Because these files are not in the segment of the page, Next.js does not add them to the page metadata; the pages pass `image` to `pageMetadata` (Decision: Algorithm page and index changes, Decision: Guide page layout). Each of the two folders contains only the image file.
 
 `shareImage` returns `new ImageResponse(...)`: a 1200 x 630 flex column with a linear gradient from `BRAND_COLORS.primary` to `BRAND_COLORS.primaryDeep`, padding 80px, the text "Nota Segura - BR" (32px, bold, `BRAND_COLORS.limeHero`) at the top, the title (64px, bold, `BRAND_COLORS.onPrimary`, at most three lines) in the middle, and the eyebrow (32px, `BRAND_COLORS.onPrimary`, opacity 0.85) at the bottom. It uses the default font of `ImageResponse`, so no font file is added.
 
@@ -199,7 +205,7 @@ Metadata: `pageMetadata({ title: "Guias de criptografia e segurança", descripti
 5. `CreateNoteCallout`.
 6. `JsonLd` with `articleJsonLd({ path: guideHref(slug), headline: guide.title, description: guide.description, publishedAt: guide.publishedAt, image: guideHref(slug) + "/opengraph-image" })`, and `JsonLd` with the breadcrumb.
 
-Metadata: `pageMetadata({ title: guide.title, description: guide.description, path: guideHref(slug), type: "article" })`.
+Metadata: `pageMetadata({ title: guide.title, description: guide.description, path: guideHref(slug), type: "article", image: guideHref(slug) + "/opengraph-image" })`.
 
 **Rationale:** The same layout as the algorithm pages, with the citations as the bridge to the algorithm content.
 
@@ -207,7 +213,7 @@ Metadata: `pageMetadata({ title: guide.title, description: guide.description, pa
 
 **Chosen:**
 
-- `frontend/src/app/(site)/algoritmos/[id]/page.tsx`: pass the breadcrumb to `TrustPage`; in "Veja também", after the two related algorithm links, add one link "Ler o guia: <title>" to `guideHref(slug)` for each guide in `guidesFor(id)`, then the link "Todos os algoritmos"; replace the callout with `CreateNoteCallout`; add `JsonLd` with `articleJsonLd({ path: algorithmHref(id), headline: articleTitle(algorithm), description: article.description, publishedAt: article.publishedAt, image: algorithmHref(id) + "/opengraph-image" })` and the breadcrumb; return `pageMetadata({ title: articleTitle(algorithm), description: article.description, path: algorithmHref(id), type: "article" })` from `generateMetadata`.
+- `frontend/src/app/(site)/algoritmos/[id]/page.tsx`: pass the breadcrumb to `TrustPage`; in "Veja também", after the two related algorithm links, add one link "Ler o guia: <title>" to `guideHref(slug)` for each guide in `guidesFor(id)`, then the link "Todos os algoritmos"; replace the callout with `CreateNoteCallout`; add `JsonLd` with `articleJsonLd({ path: algorithmHref(id), headline: articleTitle(algorithm), description: article.description, publishedAt: article.publishedAt, image: algorithmHref(id) + "/opengraph-image" })` and the breadcrumb; return `pageMetadata({ title: articleTitle(algorithm), description: article.description, path: algorithmHref(id), type: "article", image: algorithmHref(id) + "/opengraph-image" })` from `generateMetadata`.
 - `frontend/src/app/(site)/algoritmos/page.tsx`: after "Os algoritmos", add `TrustSection` "Guias e comparações" (`IconScale`) with one paragraph ("Quer comparar algoritmos ou saber o que fazer na prática? Os guias explicam qual algoritmo escolher e como proteger senhas e mensagens.") and the link "Ver todos os guias" to `/guias`; add the breadcrumb `JsonLd`; use `pageMetadata` with the current title and description and `path: "/algoritmos"`.
 - `/sobre`, `/privacidade`, `/contato`: replace `metadata` with `pageMetadata` with the current title and description and their path.
 
@@ -216,7 +222,7 @@ Metadata: `pageMetadata({ title: guide.title, description: guide.description, pa
 **Chosen:**
 
 - `NAV_LINKS = [{ href: ALGORITHMS_PATH, label: "Algoritmos" }, { href: GUIDES_PATH, label: "Guias" }, ...TRUST_PAGES]`. `TRUST_PAGES` and the footer do not change.
-- `SiteNav`: change the desktop list gap from `gap-5` to `gap-4 lg:gap-5`, so that the five links fit in one line from 640px.
+- `SiteNav`: change the desktop list gap from `gap-5` to `gap-4 lg:gap-5`, and move the breakpoint of the inline links and the "Menu" button from `sm` (640px) to `md` (768px): `md:flex` on the list, `md:hidden` on the button and on the open menu. At 640px the logo and the five links need about 6.8px more than the 592px of the header (measured by the Tester on 2026-10-31), and the logo wraps to two lines. At 768px, they need about 630px of 720px.
 - `sitemap()` returns, in order: the home, the three trust pages, `/algoritmos`, the 25 algorithm pages in `ALGORITHMS` order, `/guias`, and the eight guide pages in `GUIDES` order (39 entries).
 
 **Rationale:** The menu is how the visitors found the algorithm pages; the guides follow the same path. The exact-match `aria-current` rule stays: "Guias" is marked on `/guias` only.
@@ -247,7 +253,7 @@ Order of `GUIDES`: 1, 2, 3, 4, 5, 6, 7, 8 as numbered above.
 
 ```text
 lib/brand.ts ───────────────┐
-lib/share-image.tsx ────────┴─> app/opengraph-image.tsx, algoritmos/[id]/opengraph-image.tsx, guias/[slug]/opengraph-image.tsx
+lib/share-image.tsx ────────┴─> app/opengraph-image.tsx, app/algoritmos/[id]/opengraph-image.tsx, app/guias/[slug]/opengraph-image.tsx (outside "(site)")
 lib/seo.ts ─┬─> app/layout.tsx (siteMetadata)
             ├─> trust pages, /algoritmos, /guias (pageMetadata, breadcrumb JsonLd)
             └─> /algoritmos/<id>, /guias/<slug> (pageMetadata article, Article + BreadcrumbList JsonLd)
@@ -261,7 +267,7 @@ app/sitemap.ts ─> 39 URLs
 ## Risks
 
 - **Wrong facts in the guides fail the AdSense review and mislead readers.** Mitigation: the required-term tests, the Context facts checked in the backend, and a review of each guide by the Tester and the user before the merge.
-- **The five menu links may not fit in one line at 640px.** Mitigation: the smaller gap below 1024px, and an E2E test that checks one line and no horizontal scroll at 640px. If it fails, do not change the assertion; stop and ask the user.
+- **The five menu links did not fit in one line at 640px.** Resolved on 2026-10-31: the inline menu starts at 768px; an E2E test checks one line and no horizontal scroll at 768px, and the "Menu" button at 640px.
 - **Share images in a dynamic segment may not prerender.** Mitigation: each dynamic image file exports `generateStaticParams`. The E2E test checks status 200 and `image/png` for one image of each kind.
 - **The default font of `ImageResponse` may not draw some pt-BR characters.** Mitigation: the browser check opens the images of one guide with "ç" and "ã" in the title. If a character is missing, add a font file in a new task.
 - **Wide tables on a phone.** Mitigation: the `overflow-x-auto` container, and the E2E test for horizontal scroll at 375px on every guide.

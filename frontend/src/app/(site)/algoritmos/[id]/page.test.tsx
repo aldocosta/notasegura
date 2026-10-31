@@ -72,6 +72,58 @@ describe("AlgorithmPage", () => {
     const metadata = await generateMetadata({ params: Promise.resolve({ id: "aes-gcm" }) });
     expect(metadata.title).toBe("AES-256-GCM: o que é e como funciona");
     expect(metadata.description).toBe(ARTICLES["aes-gcm"].description);
+    expect(metadata.alternates?.canonical).toBe("/algoritmos/aes-gcm");
+    expect(metadata.openGraph).toMatchObject({ type: "article" });
+    expect((metadata.openGraph?.images as unknown as Array<{ url: string }>)[0].url).toBe(
+      "/algoritmos/aes-gcm/opengraph-image",
+    );
+  });
+
+  it("links the guides that cite the algorithm", async () => {
+    render(await AlgorithmPage({ params: Promise.resolve({ id: "aes-gcm" }) }));
+    const names = seeAlso()
+      .getAllByRole("link")
+      .map((link) => link.textContent);
+    expect(names).toEqual([
+      "Ler sobre AES-256-CBC",
+      "Ler sobre RSA-OAEP",
+      "Ler o guia: AES-256-GCM ou ChaCha20-Poly1305: qual escolher?",
+      "Ler o guia: Criptografia, hash ou codificação: qual é a diferença?",
+      "Ler o guia: Como enviar uma senha com segurança",
+      "Todos os algoritmos",
+    ]);
+  });
+
+  it("links no guide when none cites the algorithm", async () => {
+    render(await AlgorithmPage({ params: Promise.resolve({ id: "rot13" }) }));
+    for (const link of screen.getAllByRole("link")) {
+      expect(link.textContent ?? "").not.toMatch(/^Ler o guia:/);
+    }
+  });
+
+  it("renders the breadcrumb", async () => {
+    await renderCesar();
+    const nav = within(screen.getByRole("navigation", { name: "Trilha de navegação" }));
+    expect(nav.getAllByRole("link").map((l) => [l.textContent, l.getAttribute("href")])).toEqual([
+      ["Início", "/"],
+      ["Algoritmos", "/algoritmos"],
+    ]);
+    const last = nav.getByText("Cifra de César");
+    expect(last.closest("a")).toBeNull();
+    expect(last).toHaveAttribute("aria-current", "page");
+  });
+
+  it("renders the structured data", async () => {
+    const { container } = render(await AlgorithmPage({ params: Promise.resolve({ id: "enigma" }) }));
+    const data = Array.from(container.querySelectorAll('script[type="application/ld+json"]'), (s) =>
+      JSON.parse(s.textContent ?? ""),
+    ) as Array<{ "@type": string; headline?: string; itemListElement?: Array<{ name: string }> }>;
+    expect(data.find((d) => d["@type"] === "Article")?.headline).toBe("Máquina Enigma: o que é e como funciona");
+    expect(data.find((d) => d["@type"] === "BreadcrumbList")?.itemListElement?.map((i) => i.name)).toEqual([
+      "Início",
+      "Algoritmos",
+      "Máquina Enigma",
+    ]);
   });
 
   it("calls notFound for an unknown id", async () => {

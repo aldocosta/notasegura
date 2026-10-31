@@ -55,4 +55,5 @@ export const ecdh: Article = {
     },
   ],
   related: ["ecdsa", "aes-gcm"],
+  publishedAt: "2026-10-30",
 };

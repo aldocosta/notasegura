@@ -57,4 +57,5 @@ export const enigma: Article = {
     },
   ],
   related: ["vigenere", "vernam"],
+  publishedAt: "2026-10-31",
 };

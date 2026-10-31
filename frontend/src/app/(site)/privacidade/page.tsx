@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustPart, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import {
@@ -11,13 +10,15 @@ import {
   IconShield,
   IconUserOff,
 } from "@/components/icons";
+import { pageMetadata } from "@/lib/seo";
 import { POLICY_UPDATED_AT } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Política de Privacidade e Termos de Uso",
   description:
     "Quais dados o Nota Segura - BR guarda, como funcionam os cookies de publicidade e as regras de uso do serviço.",
-};
+  path: "/privacidade",
+});
 
 const HIGHLIGHTS: TrustHighlight[] = [
   {

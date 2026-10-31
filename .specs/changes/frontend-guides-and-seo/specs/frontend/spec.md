@@ -238,10 +238,10 @@ Serves: find-the-content
 
 ### Requirement: Responsive main menu
 
-> Previously: the requirement referred to four links.
+> Previously: the requirement referred to four links, and the links were visible from 640px.
 
-From a viewport width of 640px, the five links SHALL be visible in the header, in one line, without any user action.
-Below 640px, the header SHALL show a button named "Menu" with `aria-expanded="false"`, and the links SHALL be hidden until the user activates the button.
+From a viewport width of 768px, the five links SHALL be visible in the header, in one line, without any user action.
+Below 768px, the header SHALL show a button named "Menu" with `aria-expanded="false"`, and the links SHALL be hidden until the user activates the button.
 When the menu is open, the button SHALL have `aria-expanded="true"`; activating the button again, pressing Escape, or following a link SHALL close it.
 
 Serves: find-the-content
@@ -255,9 +255,16 @@ Serves: find-the-content
 
 #### Scenario: Tablet
 
-- **GIVEN** a viewport of 640 x 800 pixels
+- **GIVEN** a viewport of 768 x 1024 pixels
 - **WHEN** the user opens `/`
 - **THEN** the five links are visible in one line
+- **AND** the document scroll width is not larger than the viewport width
+
+#### Scenario: Small tablet
+
+- **GIVEN** a viewport of 640 x 800 pixels
+- **WHEN** the user opens `/`
+- **THEN** the "Menu" button is visible with `aria-expanded="false"`
 - **AND** the document scroll width is not larger than the viewport width
 
 #### Scenario: Mobile closed

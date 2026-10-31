@@ -61,4 +61,5 @@ export const aesCbc: Article = {
     },
   ],
   related: ["aes-gcm", "sha-256"],
+  publishedAt: "2026-10-30",
 };

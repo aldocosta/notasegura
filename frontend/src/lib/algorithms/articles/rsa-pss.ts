@@ -55,4 +55,5 @@ export const rsaPss: Article = {
     },
   ],
   related: ["rsa-oaep", "ecdsa"],
+  publishedAt: "2026-10-30",
 };

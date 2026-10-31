@@ -62,4 +62,5 @@ export const rot13: Article = {
     },
   ],
   related: ["cesar", "atbash"],
+  publishedAt: "2026-10-31",
 };

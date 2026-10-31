@@ -63,4 +63,5 @@ export const base64: Article = {
     },
   ],
   related: ["sha-256", "aes-gcm"],
+  publishedAt: "2026-10-30",
 };
