@@ -17,8 +17,15 @@ const NAMES = [
   "ECDH",
   "PBKDF2",
   "Base64",
+  "Hexadecimal",
   "Cifra de César",
+  "ROT13",
+  "Cifra Atbash",
   "Cifra de Vigenère",
+  "Cifra de Playfair",
+  "Cerca de trilho",
+  "Máquina Enigma",
+  "Cifra de Vernam",
 ];
 const REVERSIBLE = [
   "AES-256-GCM",

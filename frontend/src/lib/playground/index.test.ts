@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ALGORITHMS } from "./index";
 
 describe("ALGORITHMS", () => {
-  it("lists the eighteen algorithms in order", () => {
+  it("lists the twenty-five algorithms in order", () => {
     expect(ALGORITHMS.map((a) => a.name)).toEqual([
       "AES-256-GCM",
       "ChaCha20-Poly1305",
@@ -20,8 +20,15 @@ describe("ALGORITHMS", () => {
       "ECDH",
       "PBKDF2",
       "Base64",
+      "Hexadecimal",
       "Cifra de César",
+      "ROT13",
+      "Cifra Atbash",
       "Cifra de Vigenère",
+      "Cifra de Playfair",
+      "Cerca de trilho",
+      "Máquina Enigma",
+      "Cifra de Vernam",
     ]);
   });
 
@@ -43,8 +50,15 @@ describe("ALGORITHMS", () => {
       ["ECDH", "Troca de chaves", "Seguro"],
       ["PBKDF2", "Derivação de chave", "Seguro"],
       ["Base64", "Codificação", "Não é criptografia"],
+      ["Hexadecimal", "Codificação", "Não é criptografia"],
       ["Cifra de César", "Cifra clássica", "Inseguro"],
+      ["ROT13", "Cifra clássica", "Inseguro"],
+      ["Cifra Atbash", "Cifra clássica", "Inseguro"],
       ["Cifra de Vigenère", "Cifra clássica", "Inseguro"],
+      ["Cifra de Playfair", "Cifra clássica", "Inseguro"],
+      ["Cerca de trilho", "Cifra clássica", "Inseguro"],
+      ["Máquina Enigma", "Cifra clássica", "Inseguro"],
+      ["Cifra de Vernam", "Cifra clássica", "Seguro"],
     ]);
   });
 
