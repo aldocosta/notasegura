@@ -1,21 +1,28 @@
 import * as aesCbc from "./aes-cbc";
 import * as aesCtr from "./aes-ctr";
 import * as aesGcm from "./aes-gcm";
+import * as atbash from "./atbash";
 import * as base64 from "./base64";
 import * as cesar from "./cesar";
 import * as chacha20Poly1305 from "./chacha20-poly1305";
 import * as ecdh from "./ecdh";
 import * as ecdsa from "./ecdsa";
 import * as ed25519 from "./ed25519";
+import * as enigma from "./enigma";
+import * as hex from "./hex";
 import * as hmacSha256 from "./hmac-sha-256";
 import * as md5 from "./md5";
 import * as pbkdf2 from "./pbkdf2";
+import * as playfair from "./playfair";
+import * as railFence from "./rail-fence";
+import * as rot13 from "./rot13";
 import * as rsaOaep from "./rsa-oaep";
 import * as rsaPss from "./rsa-pss";
 import * as sha1 from "./sha-1";
 import * as sha256 from "./sha-256";
 import * as sha512 from "./sha-512";
 import type { Algorithm } from "./types";
+import * as vernam from "./vernam";
 import * as vigenere from "./vigenere";
 
 export const ALGORITHMS: Algorithm[] = [
@@ -180,6 +187,16 @@ export const ALGORITHMS: Algorithm[] = [
     encrypt: base64.encrypt,
   },
   {
+    id: "hex",
+    name: "Hexadecimal",
+    kind: "Codificação",
+    safety: "Não é criptografia",
+    summary: [
+      "Escreve cada byte com dois símbolos de 0 a 9 e de a até f. É muito usado para mostrar hashes e chaves. Não usa chave, então não protege nada.",
+    ],
+    encrypt: hex.encrypt,
+  },
+  {
     id: "cesar",
     name: "Cifra de César",
     kind: "Cifra clássica",
@@ -190,6 +207,26 @@ export const ALGORITHMS: Algorithm[] = [
     encrypt: cesar.encrypt,
   },
   {
+    id: "rot13",
+    name: "ROT13",
+    kind: "Cifra clássica",
+    safety: "Inseguro",
+    summary: [
+      "É a Cifra de César com deslocamento 13. Como o alfabeto tem 26 letras, aplicar o ROT13 duas vezes devolve o texto original.",
+    ],
+    encrypt: rot13.encrypt,
+  },
+  {
+    id: "atbash",
+    name: "Cifra Atbash",
+    kind: "Cifra clássica",
+    safety: "Inseguro",
+    summary: [
+      "Troca a primeira letra do alfabeto pela última, a segunda pela penúltima, e assim por diante. Vem do alfabeto hebraico e não tem chave.",
+    ],
+    encrypt: atbash.encrypt,
+  },
+  {
     id: "vigenere",
     name: "Cifra de Vigenère",
     kind: "Cifra clássica",
@@ -198,5 +235,45 @@ export const ALGORITHMS: Algorithm[] = [
       "Usa uma palavra-chave para deslocar cada letra de forma diferente. Resistiu por séculos, mas hoje é quebrada facilmente com análise de frequência.",
     ],
     encrypt: vigenere.encrypt,
+  },
+  {
+    id: "playfair",
+    name: "Cifra de Playfair",
+    kind: "Cifra clássica",
+    safety: "Inseguro",
+    summary: [
+      "Cifra pares de letras com uma grade de 5 por 5 montada a partir de uma palavra-chave. Foi usada por militares britânicos, mas cai com a análise de frequência dos pares.",
+    ],
+    encrypt: playfair.encrypt,
+  },
+  {
+    id: "rail-fence",
+    name: "Cerca de trilho",
+    kind: "Cifra clássica",
+    safety: "Inseguro",
+    summary: [
+      "Não troca nenhuma letra: escreve o texto em zigue-zague em alguns trilhos e lê trilho por trilho. É uma cifra de transposição, fácil de quebrar testando poucos números de trilhos.",
+    ],
+    encrypt: railFence.encrypt,
+  },
+  {
+    id: "enigma",
+    name: "Máquina Enigma",
+    kind: "Cifra clássica",
+    safety: "Inseguro",
+    summary: [
+      "Máquina alemã da Segunda Guerra Mundial, com rotores que mudam a substituição a cada letra. Foi quebrada por matemáticos poloneses e britânicos, entre eles Alan Turing.",
+    ],
+    encrypt: enigma.encrypt,
+  },
+  {
+    id: "vernam",
+    name: "Cifra de Vernam",
+    kind: "Cifra clássica",
+    safety: "Seguro",
+    summary: [
+      "Combina o texto com uma chave aleatória do mesmo tamanho, usada uma única vez. Bem usada, é impossível de quebrar, mas é difícil entregar uma chave tão grande ao destinatário.",
+    ],
+    encrypt: vernam.encrypt,
   },
 ];
