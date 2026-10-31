@@ -15,7 +15,7 @@ export const enigma: Article = {
       title: "O que é",
       paragraphs: [
         "A Enigma é uma máquina de cifrar eletromecânica, parecida com uma máquina de escrever. O engenheiro alemão Arthur Scherbius patenteou a máquina em 1918 e começou a vendê-la para empresas. A partir dos anos 1920, as forças armadas alemãs adotaram versões próprias, que foram usadas em larga escala na Segunda Guerra Mundial.",
-        "A Enigma é uma cifra polialfabética: a substituição muda a cada letra. Uma letra A pode virar B na primeira posição e Z na segunda. Com a chave certa, a mesma máquina decifra a mensagem.",
+        "A Enigma é uma cifra polialfabética: a substituição muda a cada letra. Uma letra A pode virar B na primeira posição e D na segunda. Com a chave certa, a mesma máquina decifra a mensagem.",
       ],
     },
     {

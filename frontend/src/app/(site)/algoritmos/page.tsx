@@ -51,9 +51,10 @@ export default function AlgoritmosPage() {
           internet sem enviá-la. E a derivação de chave, como o PBKDF2, transforma uma senha em uma chave forte.
         </p>
         <p>
-          As cifras clássicas, como a de César e a de Vigenère, foram a criptografia de outras épocas. Elas usam uma
-          chave, mas a matemática e os computadores de hoje descobrem essa chave em segundos. Servem para aprender, não
-          para proteger.
+          As cifras clássicas, como a de César e a de Vigenère, foram a criptografia de outras épocas. O ROT13 e a cifra
+          Atbash nem usam chave: qualquer pessoa desfaz. Nas outras, a matemática e os computadores de hoje descobrem a
+          chave com facilidade. A exceção é a cifra de Vernam: com uma chave aleatória, do tamanho do texto e usada uma
+          única vez, ela não pode ser quebrada. As demais servem para aprender, não para proteger.
         </p>
         <p>
           O Nota Segura - BR protege cada nota com o AES-256-GCM, um padrão moderno que também protege o HTTPS. Abaixo,

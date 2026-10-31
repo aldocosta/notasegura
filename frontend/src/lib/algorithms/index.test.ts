@@ -116,6 +116,13 @@ describe("ARTICLES", () => {
       expect(text, term).toContain(term);
     }
   });
+
+  it("matches the Enigma example", () => {
+    const section = ARTICLES.enigma.sections.find((s) => s.title === "O que é")!;
+    const text = section.paragraphs.join(" ");
+    expect(text).toContain("D na segunda");
+    expect(text).not.toContain("Z na segunda");
+  });
 });
 
 describe("article helpers", () => {

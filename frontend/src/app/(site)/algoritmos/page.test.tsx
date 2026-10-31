@@ -66,4 +66,11 @@ describe("Algoritmos", () => {
     expect(item("AES-256-GCM").getByText("Seguro")).toBeInTheDocument();
     expect(item("MD5").getByText("Inseguro")).toBeInTheDocument();
   });
+
+  it("describes the classic ciphers correctly", () => {
+    render(<AlgoritmosPage />);
+    const classic = screen.getByText(/^As cifras clássicas/);
+    expect(classic.textContent).not.toContain("em segundos");
+    expect(classic.textContent).toContain("Vernam");
+  });
 });
