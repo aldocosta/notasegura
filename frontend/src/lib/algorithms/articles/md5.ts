@@ -56,4 +56,5 @@ export const md5: Article = {
     },
   ],
   related: ["sha-1", "sha-256"],
+  publishedAt: "2026-10-30",
 };

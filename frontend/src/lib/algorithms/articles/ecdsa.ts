@@ -55,4 +55,5 @@ export const ecdsa: Article = {
     },
   ],
   related: ["rsa-pss", "ed25519"],
+  publishedAt: "2026-10-30",
 };

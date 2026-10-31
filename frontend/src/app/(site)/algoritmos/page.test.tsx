@@ -40,6 +40,12 @@ describe("Algoritmos", () => {
     const intro = screen.getByRole("heading", { level: 2, name: "Criptografia, hash e codificação" }).closest("section")!;
     expect(intro.querySelectorAll("p").length).toBeGreaterThanOrEqual(4);
     expect(metadata.title).toBe("Algoritmos de criptografia");
+    expect(metadata.alternates?.canonical).toBe("/algoritmos");
+  });
+
+  it("links the guides", () => {
+    render(<AlgoritmosPage />);
+    expect(screen.getByRole("link", { name: "Ver todos os guias" })).toHaveAttribute("href", "/guias");
   });
 
   it("lists the algorithms by category", () => {
@@ -65,5 +71,12 @@ describe("Algoritmos", () => {
     expect(item("Base64").getByText("Não é criptografia")).toBeInTheDocument();
     expect(item("AES-256-GCM").getByText("Seguro")).toBeInTheDocument();
     expect(item("MD5").getByText("Inseguro")).toBeInTheDocument();
+  });
+
+  it("describes the classic ciphers correctly", () => {
+    render(<AlgoritmosPage />);
+    const classic = screen.getByText(/^As cifras clássicas/);
+    expect(classic.textContent).not.toContain("em segundos");
+    expect(classic.textContent).toContain("Vernam");
   });
 });

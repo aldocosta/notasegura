@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import CreateNoteCallout from "@/components/CreateNoteCallout";
 import CryptoPlayground from "@/components/CryptoPlayground";
+import JsonLd from "@/components/JsonLd";
 import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import {
@@ -15,7 +17,9 @@ import {
 } from "@/components/icons";
 import { ARTICLES, algorithmHref, articleTitle, findAlgorithm } from "@/lib/algorithms";
 import type { ArticleSectionTitle } from "@/lib/algorithms/types";
+import { guideHref, guidesFor } from "@/lib/guides";
 import { ALGORITHMS } from "@/lib/playground";
+import { articleJsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import { ALGORITHMS_PATH } from "@/lib/site";
 
 type Props = { params: Promise<{ id: string }> };
@@ -38,7 +42,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const algorithm = findAlgorithm((await params).id);
   if (!algorithm) return {};
-  return { title: articleTitle(algorithm), description: ARTICLES[algorithm.id].description };
+  const path = algorithmHref(algorithm.id);
+  return pageMetadata({
+    title: articleTitle(algorithm),
+    description: ARTICLES[algorithm.id].description,
+    path,
+    type: "article",
+    image: `${path}/opengraph-image`,
+  });
 }
 
 export default async function AlgorithmPage({ params }: Props) {
@@ -51,9 +62,21 @@ export default async function AlgorithmPage({ params }: Props) {
     { icon: IconShield, title: algorithm.safety, text: article.highlights.safety },
     { icon: IconKey, title: "Chave", text: article.highlights.key },
   ];
+  const path = algorithmHref(algorithm.id);
+  const title = articleTitle(algorithm);
 
   return (
-    <TrustPage title={articleTitle(algorithm)} lead={article.lead} icon={IconLock} highlights={highlights}>
+    <TrustPage
+      title={title}
+      lead={article.lead}
+      icon={IconLock}
+      breadcrumb={[
+        { name: "Início", href: "/" },
+        { name: "Algoritmos", href: ALGORITHMS_PATH },
+        { name: algorithm.name },
+      ]}
+      highlights={highlights}
+    >
       {article.sections.map((section) => (
         <TrustSection key={section.title} title={section.title} icon={SECTION_ICONS[section.title]}>
           {section.paragraphs.map((paragraph) => (
@@ -80,18 +103,35 @@ export default async function AlgorithmPage({ params }: Props) {
               <TextLink href={algorithmHref(id)}>Ler sobre {findAlgorithm(id)!.name}</TextLink>
             </li>
           ))}
+          {guidesFor(algorithm.id).map((guide) => (
+            <li key={guide.slug}>
+              <TextLink href={guideHref(guide.slug)}>Ler o guia: {guide.title}</TextLink>
+            </li>
+          ))}
           <li>
             <TextLink href={ALGORITHMS_PATH}>Todos os algoritmos</TextLink>
           </li>
         </ul>
       </TrustSection>
 
-      <TrustSection title="Precisa enviar um segredo?" icon={IconShield} tone="mint">
-        <p>Use uma nota segura: o texto é criptografado com AES-256-GCM e se apaga sozinho.</p>
-        <p>
-          <TextLink href="/#criar-nota">Criar uma nota</TextLink>
-        </p>
-      </TrustSection>
+      <CreateNoteCallout />
+
+      <JsonLd
+        data={articleJsonLd({
+          path,
+          headline: title,
+          description: article.description,
+          publishedAt: article.publishedAt,
+          image: `${path}/opengraph-image`,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Início", path: "/" },
+          { name: "Algoritmos", path: ALGORITHMS_PATH },
+          { name: algorithm.name, path },
+        ])}
+      />
     </TrustPage>
   );
 }

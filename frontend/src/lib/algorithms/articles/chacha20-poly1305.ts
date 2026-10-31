@@ -61,4 +61,5 @@ export const chacha20Poly1305: Article = {
     },
   ],
   related: ["aes-gcm", "aes-ctr"],
+  publishedAt: "2026-10-30",
 };

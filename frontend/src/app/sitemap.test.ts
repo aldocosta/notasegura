@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe("sitemap", () => {
-  it("lists the home, the trust pages, and the algorithm pages", () => {
+  it("lists the home, the trust pages, the algorithm pages, and the guides", () => {
     expect(sitemap().map((e) => e.url)).toEqual([
       "https://notasegura.example",
       "https://notasegura.example/sobre",
@@ -43,7 +43,17 @@ describe("sitemap", () => {
       "https://notasegura.example/algoritmos/rail-fence",
       "https://notasegura.example/algoritmos/enigma",
       "https://notasegura.example/algoritmos/vernam",
+      "https://notasegura.example/guias",
+      "https://notasegura.example/guias/aes-gcm-ou-chacha20-poly1305",
+      "https://notasegura.example/guias/sha-256-sha-1-ou-md5",
+      "https://notasegura.example/guias/criptografia-hash-ou-codificacao",
+      "https://notasegura.example/guias/rsa-ou-curvas-elipticas",
+      "https://notasegura.example/guias/como-enviar-uma-senha-com-seguranca",
+      "https://notasegura.example/guias/o-que-e-uma-nota-autodestrutiva",
+      "https://notasegura.example/guias/o-que-e-criptografia-de-ponta-a-ponta",
+      "https://notasegura.example/guias/como-guardar-senhas",
     ]);
+    expect(sitemap()).toHaveLength(39);
     for (const entry of sitemap()) {
       expect(entry.url).not.toContain("/termos");
     }

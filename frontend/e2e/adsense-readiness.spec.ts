@@ -139,9 +139,20 @@ test("sitemap lists the public pages", async ({ request }) => {
     "https://notasegura.example/algoritmos/rail-fence",
     "https://notasegura.example/algoritmos/enigma",
     "https://notasegura.example/algoritmos/vernam",
+    "https://notasegura.example/guias",
+    "https://notasegura.example/guias/aes-gcm-ou-chacha20-poly1305",
+    "https://notasegura.example/guias/sha-256-sha-1-ou-md5",
+    "https://notasegura.example/guias/criptografia-hash-ou-codificacao",
+    "https://notasegura.example/guias/rsa-ou-curvas-elipticas",
+    "https://notasegura.example/guias/como-enviar-uma-senha-com-seguranca",
+    "https://notasegura.example/guias/o-que-e-uma-nota-autodestrutiva",
+    "https://notasegura.example/guias/o-que-e-criptografia-de-ponta-a-ponta",
+    "https://notasegura.example/guias/como-guardar-senhas",
   ]);
+  expect(locs).toHaveLength(39);
   for (const loc of locs) {
     expect(loc).not.toContain("/termos");
+    expect(loc).not.toContain("/n/");
   }
 });
 

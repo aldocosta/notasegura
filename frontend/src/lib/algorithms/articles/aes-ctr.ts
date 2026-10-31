@@ -60,4 +60,5 @@ export const aesCtr: Article = {
     },
   ],
   related: ["aes-gcm", "chacha20-poly1305"],
+  publishedAt: "2026-10-30",
 };

@@ -61,4 +61,5 @@ export const hmacSha256: Article = {
     },
   ],
   related: ["sha-256", "ecdsa"],
+  publishedAt: "2026-10-30",
 };

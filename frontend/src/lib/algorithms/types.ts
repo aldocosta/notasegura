@@ -20,4 +20,5 @@ export type Article = {
   highlights: { kind: string; safety: string; key: string };
   sections: ArticleSection[];
   related: [AlgorithmId, AlgorithmId];
+  publishedAt: string;
 };

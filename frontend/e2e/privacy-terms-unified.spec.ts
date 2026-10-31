@@ -1,7 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 
 const DESKTOP = { width: 1280, height: 800 };
-const TABLET = { width: 640, height: 800 };
+const TABLET = { width: 768, height: 1024 };
+const SMALL_TABLET = { width: 640, height: 800 };
 const MOBILE = { width: 375, height: 812 };
 const TRUST_LINKS: Array<[string, string]> = [
   ["Sobre", "/sobre"],
@@ -62,7 +63,7 @@ test("menu shows Algoritmos and the trust links; footer shows the trust links", 
   await page.setViewportSize(DESKTOP);
   await page.goto("/");
   const expected: Array<[string, Array<[string, string]>]> = [
-    ['nav[aria-label="Principal"]', [["Algoritmos", "/algoritmos"], ...TRUST_LINKS]],
+    ['nav[aria-label="Principal"]', [["Algoritmos", "/algoritmos"], ["Guias", "/guias"], ...TRUST_LINKS]],
     ['nav[aria-label="Rodapé"]', TRUST_LINKS],
   ];
   for (const [selector, navLinks] of expected) {
@@ -77,12 +78,27 @@ test("menu shows Algoritmos and the trust links; footer shows the trust links", 
   }
 });
 
-test("header fits at 640px", async ({ page }) => {
+test("header fits at 768px", async ({ page }) => {
   await page.setViewportSize(TABLET);
   await page.goto("/");
-  for (const name of ["Algoritmos", ...TRUST_LINKS.map(([label]) => label)]) {
-    await expect(mainNav(page).getByRole("link", { name, exact: true }), name).toBeVisible();
+  const tops: number[] = [];
+  for (const name of ["Algoritmos", "Guias", ...TRUST_LINKS.map(([label]) => label)]) {
+    const link = mainNav(page).getByRole("link", { name, exact: true });
+    await expect(link, name).toBeVisible();
+    const box = await link.boundingBox();
+    expect(box, name).not.toBeNull();
+    tops.push(box!.y);
   }
+  expect(new Set(tops).size, `link tops: ${tops.join(", ")}`).toBe(1);
+  expect(await fitsViewport(page)).toBe(true);
+});
+
+test("header shows the Menu button at 640px", async ({ page }) => {
+  await page.setViewportSize(SMALL_TABLET);
+  await page.goto("/");
+  const menuButton = mainNav(page).getByRole("button", { name: "Menu", exact: true });
+  await expect(menuButton).toBeVisible();
+  await expect(menuButton).toHaveAttribute("aria-expanded", "false");
   expect(await fitsViewport(page)).toBe(true);
 });
 

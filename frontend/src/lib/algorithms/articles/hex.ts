@@ -63,4 +63,5 @@ export const hex: Article = {
     },
   ],
   related: ["base64", "sha-256"],
+  publishedAt: "2026-10-31",
 };

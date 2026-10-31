@@ -56,4 +56,5 @@ export const vigenere: Article = {
     },
   ],
   related: ["cesar", "aes-gcm"],
+  publishedAt: "2026-10-30",
 };
