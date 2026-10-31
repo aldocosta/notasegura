@@ -47,16 +47,15 @@ describe("site config", () => {
     expect(getContactEmail()).toBe("contato@example.com");
   });
 
-  it("lists the four trust pages", () => {
-    expect(TRUST_PAGES.map((p) => p.href)).toEqual(["/sobre", "/privacidade", "/termos", "/contato"]);
-    expect(TRUST_PAGES.map((p) => p.label)).toEqual(["Sobre", "Privacidade", "Termos", "Contato"]);
+  it("lists the three trust pages", () => {
+    expect(TRUST_PAGES.map((p) => p.href)).toEqual(["/sobre", "/privacidade", "/contato"]);
+    expect(TRUST_PAGES.map((p) => p.label)).toEqual(["Sobre", "Privacidade e Termos", "Contato"]);
   });
 
   it("lists the main menu links", () => {
     expect(NAV_LINKS.map((l) => [l.label, l.href])).toEqual([
       ["Sobre", "/sobre"],
-      ["Privacidade", "/privacidade"],
-      ["Termos", "/termos"],
+      ["Privacidade e Termos", "/privacidade"],
       ["Contato", "/contato"],
     ]);
   });

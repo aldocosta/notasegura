@@ -67,18 +67,49 @@ export function TrustPage({
   );
 }
 
+export function TrustPart({
+  id,
+  title,
+  icon: Icon,
+  children,
+}: {
+  id: string;
+  title: string;
+  icon: IconComponent;
+  children: ReactNode;
+}) {
+  const headingId = `${id}-titulo`;
+
+  return (
+    <section id={id} aria-labelledby={headingId} className="scroll-mt-24 space-y-8">
+      <div className="flex items-center gap-3 border-b border-hairline pb-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint-100 text-primary">
+          <Icon className="h-5 w-5" />
+        </span>
+        <h2 id={headingId} className="text-xl font-bold text-ink sm:text-2xl">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
 export function TrustSection({
   title,
   icon: Icon,
   tone = "plain",
+  level = 2,
   children,
 }: {
   title?: string;
   icon?: IconComponent;
   tone?: "plain" | "mint";
+  level?: 2 | 3;
   children: ReactNode;
 }) {
   const toneClass = tone === "mint" ? "rounded-lg bg-mint-50 p-5" : "";
+  const Heading = level === 3 ? "h3" : "h2";
 
   return (
     <section className={`space-y-3 ${toneClass}`}>
@@ -89,7 +120,7 @@ export function TrustSection({
               <Icon className="h-5 w-5" />
             </span>
           )}
-          <h2 className="text-lg font-bold text-ink sm:text-xl">{title}</h2>
+          <Heading className="text-lg font-bold text-ink sm:text-xl">{title}</Heading>
         </div>
       )}
       {children}

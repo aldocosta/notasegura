@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`note-limits-30-days-50-views` proposed)
+Last reviewed: 2026-10-30 (`frontend-crypto-playground` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -16,8 +16,15 @@ Delete this file when the remaining changes can apply and sync in any order.
 | `frontend-adsense-readiness` | `frontend-how-it-works-cta` applied |
 | `frontend-header-nav` | `frontend-adsense-readiness` applied |
 | `frontend-brand-and-trust-visuals` | `frontend-header-nav` applied |
+| `note-limits-30-days-50-views` | (none) |
+| `frontend-unify-privacy-terms` | `frontend-brand-and-trust-visuals` applied, `note-limits-30-days-50-views` applied |
 
 ## Reasons
+
+### `frontend-unify-privacy-terms`
+
+- **After `frontend-brand-and-trust-visuals` (rework):** this change edits `TrustPage.tsx`, the trust pages, `TRUST_PAGES`, and the menu, which `frontend-adsense-readiness`, `frontend-header-nav`, and `frontend-brand-and-trust-visuals` create in that order. Applying it earlier would merge `/termos` into a page that does not have its final layout yet.
+- **After `note-limits-30-days-50-views` (rework):** that change edits the text of `privacidade/page.tsx` and its test. This change moves the same text into the unified page; in the other order, the 30-day text would be edited on a moved file.
 
 ### `frontend-brand-and-trust-visuals`
 
@@ -38,6 +45,15 @@ Delete this file when the remaining changes can apply and sync in any order.
 - **After `persist-application-logs` (rework):** the refactor moves the log schema, log store, and interceptor. Applying that change after the refactor would target the old paths.
 - **After `rate-limiting` (rework):** the refactor moves the guard, store, and schema to `src/platform/rate-limit/`. Applying `rate-limiting` after the refactor would recreate `src/application/rate-limit/` and `src/presentation/rate-limit/`.
 
+## Shared requirements
+
+- `frontend`: `Trust pages`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
+- `frontend`: `Site navigation`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
+- `frontend`: `Sitemap`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
+- `frontend`: `Main menu in the header`: `frontend-header-nav`, `frontend-unify-privacy-terms`.
+- `frontend`: `Responsive main menu`: `frontend-header-nav`, `frontend-unify-privacy-terms`.
+- `frontend`: `Trust page layout`: `frontend-brand-and-trust-visuals`, `frontend-unify-privacy-terms`.
+
 ## Not scheduled
 
 | Change | Starts when |
@@ -51,4 +67,4 @@ Delete this file when the remaining changes can apply and sync in any order.
 - `frontend-feature`
 - `backend-invalid-note-id`
 - `rate-limit-configurable`
-- `note-limits-30-days-50-views`
+- `frontend-crypto-playground`
