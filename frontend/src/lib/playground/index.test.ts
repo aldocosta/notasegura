@@ -38,4 +38,12 @@ describe("ALGORITHMS", () => {
     expect(aes).toBeDefined();
     expect(aes!.summary.join(" ")).toContain("Nota Segura - BR");
   });
+
+  it("says that RSA signatures use PSS", () => {
+    const rsa = ALGORITHMS.find((a) => a.name === "RSA-OAEP");
+    expect(rsa).toBeDefined();
+    const text = rsa!.summary.join(" ");
+    expect(text).toContain("PSS");
+    expect(text).not.toContain("É usada para trocar chaves e assinar dados");
+  });
 });

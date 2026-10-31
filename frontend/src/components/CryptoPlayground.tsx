@@ -1,10 +1,15 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import SafetyBadge from "@/components/SafetyBadge";
+import { algorithmHref } from "@/lib/algorithms/href";
 import { ALGORITHMS } from "@/lib/playground";
-import type { Algorithm, AlgorithmId, EncryptResult } from "@/lib/playground/types";
+import type { AlgorithmId, EncryptResult } from "@/lib/playground/types";
 import { MAX_TEXT_LENGTH, validateInput } from "@/lib/playground/validate";
 import { WebCryptoUnavailableError } from "@/lib/playground/web-crypto";
+import { ALGORITHMS_PATH } from "@/lib/site";
 
 const FOCUS_RING = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 const FIELD_CLASS =
@@ -12,20 +17,17 @@ const FIELD_CLASS =
 const UNSUPPORTED_MESSAGE = "Seu navegador não permite criptografia nesta página.";
 const FAILURE_MESSAGE = "Não foi possível concluir a operação. Tente novamente.";
 
-const SAFETY_CLASS: Record<Algorithm["safety"], string> = {
-  Seguro: "border-mint-200 bg-mint-100 text-primary",
-  "Não é criptografia": "border-hairline-strong bg-canvas-soft text-body",
-  Inseguro: "border-error bg-canvas text-error",
-};
+const LINK_CLASS = `rounded-xs font-bold text-primary hover:underline ${FOCUS_RING}`;
 
 function failureMessage(err: unknown): string {
   return err instanceof WebCryptoUnavailableError ? UNSUPPORTED_MESSAGE : FAILURE_MESSAGE;
 }
 
-export default function CryptoPlayground() {
+export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }: { initialAlgorithm?: AlgorithmId }) {
   const ids = useId();
+  const pathname: string | null = usePathname();
   const runRef = useRef(0);
-  const [algorithmId, setAlgorithmId] = useState<AlgorithmId>(ALGORITHMS[0].id);
+  const [algorithmId, setAlgorithmId] = useState<AlgorithmId>(initialAlgorithm);
   const [text, setText] = useState("");
   const [shift, setShift] = useState("3");
   const [keyword, setKeyword] = useState("");
@@ -112,9 +114,7 @@ export default function CryptoPlayground() {
       <div className="mt-4 rounded border border-hairline-strong bg-canvas p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-base font-bold text-ink">{algorithm.name}</h3>
-          <span className={`rounded-full border px-2 py-0.5 text-xs font-bold ${SAFETY_CLASS[algorithm.safety]}`}>
-            {algorithm.safety}
-          </span>
+          <SafetyBadge safety={algorithm.safety} />
         </div>
         <p className="mt-1 text-xs font-bold text-muted">{algorithm.kind}</p>
         {algorithm.summary.map((paragraph) => (
@@ -122,6 +122,16 @@ export default function CryptoPlayground() {
             {paragraph}
           </p>
         ))}
+        <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          {pathname !== algorithmHref(algorithm.id) && (
+            <Link href={algorithmHref(algorithm.id)} className={LINK_CLASS}>
+              Saiba mais sobre {algorithm.name}
+            </Link>
+          )}
+          <Link href={ALGORITHMS_PATH} className={LINK_CLASS}>
+            Ver todos os algoritmos
+          </Link>
+        </p>
       </div>
 
       <form onSubmit={encrypt} noValidate className="mt-4 space-y-4">

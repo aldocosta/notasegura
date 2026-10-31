@@ -11,12 +11,20 @@ afterEach(() => {
 });
 
 describe("sitemap", () => {
-  it("lists exactly the home and the trust pages", () => {
+  it("lists the home, the trust pages, and the algorithm pages", () => {
     expect(sitemap().map((e) => e.url)).toEqual([
       "https://notasegura.example",
       "https://notasegura.example/sobre",
       "https://notasegura.example/privacidade",
       "https://notasegura.example/contato",
+      "https://notasegura.example/algoritmos",
+      "https://notasegura.example/algoritmos/aes-gcm",
+      "https://notasegura.example/algoritmos/aes-cbc",
+      "https://notasegura.example/algoritmos/rsa-oaep",
+      "https://notasegura.example/algoritmos/sha-256",
+      "https://notasegura.example/algoritmos/base64",
+      "https://notasegura.example/algoritmos/cesar",
+      "https://notasegura.example/algoritmos/vigenere",
     ]);
     for (const entry of sitemap()) {
       expect(entry.url).not.toContain("/termos");

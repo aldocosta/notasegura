@@ -58,13 +58,17 @@ test("anchor links jump to each part", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2, name: "Política de Privacidade" })).toBeInViewport();
 });
 
-test("menu and footer show three trust links", async ({ page }) => {
+test("menu shows Algoritmos and the trust links; footer shows the trust links", async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   await page.goto("/");
-  for (const selector of ['nav[aria-label="Principal"]', 'nav[aria-label="Rodapé"]']) {
+  const expected: Array<[string, Array<[string, string]>]> = [
+    ['nav[aria-label="Principal"]', [["Algoritmos", "/algoritmos"], ...TRUST_LINKS]],
+    ['nav[aria-label="Rodapé"]', TRUST_LINKS],
+  ];
+  for (const [selector, navLinks] of expected) {
     const links = page.locator(selector).getByRole("link");
-    await expect(links, selector).toHaveCount(TRUST_LINKS.length);
-    for (const [i, [name, href]] of TRUST_LINKS.entries()) {
+    await expect(links, selector).toHaveCount(navLinks.length);
+    for (const [i, [name, href]] of navLinks.entries()) {
       const link = links.nth(i);
       await expect(link, `${selector} ${name}`).toHaveText(name);
       await expect(link, `${selector} ${name}`).toHaveAttribute("href", href);
@@ -76,7 +80,7 @@ test("menu and footer show three trust links", async ({ page }) => {
 test("header fits at 640px", async ({ page }) => {
   await page.setViewportSize(TABLET);
   await page.goto("/");
-  for (const [name] of TRUST_LINKS) {
+  for (const name of ["Algoritmos", ...TRUST_LINKS.map(([label]) => label)]) {
     await expect(mainNav(page).getByRole("link", { name, exact: true }), name).toBeVisible();
   }
   expect(await fitsViewport(page)).toBe(true);
