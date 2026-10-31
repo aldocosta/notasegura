@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import CryptoPlayground from "@/components/CryptoPlayground";
 import { createNote } from "@/lib/api";
 
 export default function Home() {
@@ -169,7 +170,9 @@ export default function Home() {
         </div>
       </section>
 
-
+      <section id="testar-algoritmos" className="mx-auto max-w-3xl px-4 pb-8 sm:px-6 sm:pb-12">
+        <CryptoPlayground />
+      </section>
 
       <aside className="mx-auto max-w-5xl px-4 py-2 text-center text-xs text-faint sm:px-6">
         {/* ads/add-ons placeholder (<=8% screen) */}
