@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`frontend-algorithm-pages` proposed)
+Last reviewed: 2026-10-30 (`frontend-playground-modern-algorithms` and `frontend-playground-classic-algorithms` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -20,8 +20,18 @@ Delete this file when the remaining changes can apply and sync in any order.
 | `frontend-unify-privacy-terms` | `frontend-brand-and-trust-visuals` applied, `note-limits-30-days-50-views` applied |
 | `frontend-crypto-playground` | (none) |
 | `frontend-algorithm-pages` | `frontend-crypto-playground` applied, `frontend-unify-privacy-terms` applied |
+| `frontend-playground-modern-algorithms` | `frontend-algorithm-pages` applied |
+| `frontend-playground-classic-algorithms` | `frontend-playground-modern-algorithms` applied |
 
 ## Reasons
+
+### `frontend-playground-classic-algorithms`
+
+- **After `frontend-playground-modern-algorithms` (capability):** it uses `AlgorithmKind`, `CATEGORIES`, `actions.ts`, and the grouped index that the modern change adds, and it edits the same lists of 18 names in the tests.
+
+### `frontend-playground-modern-algorithms`
+
+- **After `frontend-algorithm-pages` (capability):** it adds articles to `ARTICLES` and edits the index page, the sitemap, and their tests, which `frontend-algorithm-pages` creates.
 
 ### `frontend-algorithm-pages`
 
@@ -56,7 +66,10 @@ Delete this file when the remaining changes can apply and sync in any order.
 
 - `frontend`: `Trust pages`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
 - `frontend`: `Site navigation`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
-- `frontend`: `Sitemap`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
+- `frontend`: `Sitemap`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`, `frontend-playground-modern-algorithms`, `frontend-playground-classic-algorithms`.
+- `frontend`: `Playground card on the home page`, `Algorithm explanation`, `Encrypt and show the result`, `Decrypt the result`, `Input validation`: `frontend-crypto-playground`, `frontend-playground-modern-algorithms`, `frontend-playground-classic-algorithms`.
+- `frontend`: `Algorithm article pages`: `frontend-algorithm-pages`, `frontend-playground-modern-algorithms`, `frontend-playground-classic-algorithms`.
+- `frontend`: `Algorithm index page`: `frontend-algorithm-pages`, `frontend-playground-modern-algorithms`.
 - `frontend`: `Main menu in the header`: `frontend-header-nav`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
 - `frontend`: `Responsive main menu`: `frontend-header-nav`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
 - `frontend`: `Trust page layout`: `frontend-brand-and-trust-visuals`, `frontend-unify-privacy-terms`.

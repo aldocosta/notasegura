@@ -12,6 +12,17 @@ export function toBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
+export function toHex(bytes: Uint8Array): string {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+export function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
 export function fromBase64(base64: string) {
   return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
 }

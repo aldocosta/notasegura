@@ -2,14 +2,36 @@ import { test, expect, type Page } from "@playwright/test";
 
 const NAMES = [
   "AES-256-GCM",
+  "ChaCha20-Poly1305",
   "AES-256-CBC",
+  "AES-256-CTR",
   "RSA-OAEP",
   "SHA-256",
+  "SHA-512",
+  "SHA-1",
+  "MD5",
+  "HMAC-SHA-256",
+  "ECDSA",
+  "Ed25519",
+  "RSA-PSS",
+  "ECDH",
+  "PBKDF2",
   "Base64",
   "Cifra de César",
   "Cifra de Vigenère",
 ];
-const REVERSIBLE = NAMES.filter((name) => name !== "SHA-256");
+const REVERSIBLE = [
+  "AES-256-GCM",
+  "ChaCha20-Poly1305",
+  "AES-256-CBC",
+  "AES-256-CTR",
+  "RSA-OAEP",
+  "ECDH",
+  "Base64",
+  "Cifra de César",
+  "Cifra de Vigenère",
+];
+const ENCODINGS = ["Base64"];
 const AES_GCM_SUMMARY =
   "Padrão moderno de criptografia simétrica: a mesma chave cifra e decifra. O modo GCM também detecta se o texto cifrado foi alterado. É o algoritmo que o Nota Segura - BR usa para proteger as notas.";
 const ABC_DIGEST = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
@@ -27,24 +49,27 @@ async function select(page: Page, name: string) {
   await card(page).getByRole("group", { name: "Algoritmos" }).getByRole("button", { name, exact: true }).click();
 }
 
-async function encrypt(page: Page, text: string) {
-  await card(page).getByLabel("Texto para encriptar").fill(text);
-  await card(page).getByRole("button", { name: "Encriptar", exact: true }).click();
+async function encrypt(page: Page, text: string, action = "Encriptar") {
+  await card(page).getByLabel("Texto", { exact: true }).fill(text);
+  await card(page).getByRole("button", { name: action, exact: true }).click();
 }
 
 async function roundTrip(page: Page, name: string) {
+  const encoding = ENCODINGS.includes(name);
   await select(page, name);
   if (name === "Cifra de Vigenère") {
     await card(page).getByLabel("Palavra-chave").fill("chave");
   }
-  await encrypt(page, SAMPLE);
+  await encrypt(page, SAMPLE, encoding ? "Codificar" : "Encriptar");
   const result = valueOf(page, "Resultado");
   await expect(result, name).toBeVisible();
   const output = (await result.textContent())?.trim() ?? "";
   expect(output, name).not.toBe("");
   expect(output, name).not.toBe(SAMPLE);
-  await card(page).getByRole("button", { name: "Decifrar", exact: true }).click();
-  await expect(valueOf(page, "Texto decifrado"), name).toHaveText(SAMPLE);
+  await card(page)
+    .getByRole("button", { name: encoding ? "Decodificar" : "Decifrar", exact: true })
+    .click();
+  await expect(valueOf(page, encoding ? "Texto decodificado" : "Texto decifrado"), name).toHaveText(SAMPLE);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -85,7 +110,7 @@ test("AES gives a new result each time", async ({ page }) => {
 test("SHA-256 has no decrypt", async ({ page }) => {
   await page.goto("/");
   await select(page, "SHA-256");
-  await encrypt(page, "abc");
+  await encrypt(page, "abc", "Gerar hash");
   await expect(valueOf(page, "Resultado")).toHaveText(ABC_DIGEST);
   await expect(card(page).getByRole("button", { name: "Decifrar", exact: true })).not.toBeVisible();
 });
@@ -106,7 +131,7 @@ test("no request leaves the page", async ({ page }) => {
     await roundTrip(page, name);
   }
   await select(page, "SHA-256");
-  await encrypt(page, "abc");
+  await encrypt(page, "abc", "Gerar hash");
   await expect(valueOf(page, "Resultado")).toHaveText(ABC_DIGEST);
   expect(urls.filter((url) => url.includes("/api/"))).toEqual([]);
 });

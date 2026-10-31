@@ -4,12 +4,12 @@ import TextLink from "@/components/TextLink";
 import { TrustPage, TrustSection, type TrustHighlight } from "@/components/TrustPage";
 import { IconFileText, IconGlobe, IconKey, IconLock } from "@/components/icons";
 import { algorithmHref } from "@/lib/algorithms";
-import { ALGORITHMS } from "@/lib/playground";
+import { algorithmsByCategory } from "@/lib/playground/categories";
 
 export const metadata: Metadata = {
   title: "Algoritmos de criptografia",
   description:
-    "Como funcionam AES, RSA, SHA-256, Base64 e as cifras de César e Vigenère, e quais deles protegem um segredo de verdade.",
+    "Como funcionam AES, ChaCha20, RSA, SHA-256, HMAC, ECDSA, ECDH, PBKDF2, Base64 e cifras clássicas, e quais protegem um segredo.",
 };
 
 const HIGHLIGHTS: TrustHighlight[] = [
@@ -44,6 +44,13 @@ export default function AlgoritmosPage() {
           codificação, como o Base64, só muda o formato dos dados para transportá-los, e qualquer pessoa desfaz.
         </p>
         <p>
+          Outros algoritmos não escondem o texto, mas resolvem problemas vizinhos. Um código de autenticação, como o
+          HMAC, prova que a mensagem veio de quem tem a chave secreta e que não mudou. Uma assinatura digital, como o
+          ECDSA ou o Ed25519, faz o mesmo com duas chaves: só a chave privada assina, e qualquer pessoa confere com a
+          chave pública. A troca de chaves, como o ECDH, permite que duas pessoas combinem uma chave secreta pela
+          internet sem enviá-la. E a derivação de chave, como o PBKDF2, transforma uma senha em uma chave forte.
+        </p>
+        <p>
           As cifras clássicas, como a de César e a de Vigenère, foram a criptografia de outras épocas. Elas usam uma
           chave, mas a matemática e os computadores de hoje descobrem essa chave em segundos. Servem para aprender, não
           para proteger.
@@ -56,25 +63,30 @@ export default function AlgoritmosPage() {
       </TrustSection>
 
       <TrustSection title="Os algoritmos" icon={IconKey}>
-        <ul aria-label="Lista de algoritmos" className="grid gap-4">
-          {ALGORITHMS.map((algorithm) => (
-            <li key={algorithm.id} className="rounded-lg border border-hairline-strong bg-canvas p-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-base font-bold text-ink">{algorithm.name}</h3>
-                <SafetyBadge safety={algorithm.safety} />
-              </div>
-              <p className="mt-1 text-xs font-bold text-muted">{algorithm.kind}</p>
-              {algorithm.summary.map((paragraph) => (
-                <p key={paragraph} className="mt-2 text-sm text-body">
-                  {paragraph}
-                </p>
+        {algorithmsByCategory().map((category) => (
+          <section key={category.name} className="space-y-3 pt-2">
+            <h3 className="text-base font-bold text-ink sm:text-lg">{category.name}</h3>
+            <ul aria-label={category.name} className="grid gap-4">
+              {category.algorithms.map((algorithm) => (
+                <li key={algorithm.id} className="rounded-lg border border-hairline-strong bg-canvas p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h4 className="text-base font-bold text-ink">{algorithm.name}</h4>
+                    <SafetyBadge safety={algorithm.safety} />
+                  </div>
+                  <p className="mt-1 text-xs font-bold text-muted">{algorithm.kind}</p>
+                  {algorithm.summary.map((paragraph) => (
+                    <p key={paragraph} className="mt-2 text-sm text-body">
+                      {paragraph}
+                    </p>
+                  ))}
+                  <p className="mt-3 text-sm">
+                    <TextLink href={algorithmHref(algorithm.id)}>Ler sobre {algorithm.name}</TextLink>
+                  </p>
+                </li>
               ))}
-              <p className="mt-3 text-sm">
-                <TextLink href={algorithmHref(algorithm.id)}>Ler sobre {algorithm.name}</TextLink>
-              </p>
-            </li>
-          ))}
-        </ul>
+            </ul>
+          </section>
+        ))}
       </TrustSection>
     </TrustPage>
   );

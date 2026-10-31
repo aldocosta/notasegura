@@ -7,7 +7,7 @@ export const MAX_TEXT_LENGTH = 500;
 const KEYWORD = /^[A-Za-z]+$/;
 
 export function validateInput(algorithmId: AlgorithmId, text: string, options: EncryptOptions): string | null {
-  if (text.length === 0) return "Escreva um texto para encriptar.";
+  if (text.length === 0) return algorithmId === "pbkdf2" ? "Escreva uma senha." : "Escreva um texto.";
   if (text.length > MAX_TEXT_LENGTH) return `O texto pode ter no máximo ${MAX_TEXT_LENGTH} caracteres.`;
 
   if (algorithmId === "rsa-oaep" && utf8Encode(text).length > RSA_MAX_BYTES) {
