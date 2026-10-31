@@ -28,10 +28,10 @@ afterEach(() => {
 });
 
 describe("SiteNav", () => {
-  it("renders the three links in order", () => {
+  it("renders the four links in order", () => {
     render(<SiteHeader />);
     const links = within(mainNav()).getAllByRole("link");
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(4);
     expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual(
       NAV_LINKS.map((l) => [l.label, l.href]),
     );
@@ -44,6 +44,24 @@ describe("SiteNav", () => {
     expect(nav.getByRole("link", { name: "Privacidade e Termos" })).toHaveAttribute("aria-current", "page");
     for (const name of ["Sobre", "Contato"]) {
       expect(nav.getByRole("link", { name })).not.toHaveAttribute("aria-current");
+    }
+  });
+
+  it("marks Algoritmos on the index", () => {
+    mockedUsePathname.mockReturnValue("/algoritmos");
+    render(<SiteHeader />);
+    const nav = within(mainNav());
+    expect(nav.getByRole("link", { name: "Algoritmos" })).toHaveAttribute("aria-current", "page");
+    for (const name of ["Sobre", "Privacidade e Termos", "Contato"]) {
+      expect(nav.getByRole("link", { name })).not.toHaveAttribute("aria-current");
+    }
+  });
+
+  it("marks nothing on an article page", () => {
+    mockedUsePathname.mockReturnValue("/algoritmos/cesar");
+    render(<SiteHeader />);
+    for (const link of within(mainNav()).getAllByRole("link")) {
+      expect(link).not.toHaveAttribute("aria-current");
     }
   });
 

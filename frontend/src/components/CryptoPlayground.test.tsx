@@ -1,11 +1,22 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { usePathname } from "next/navigation";
 import { createNote } from "@/lib/api";
 import CryptoPlayground from "./CryptoPlayground";
 
 vi.mock("@/lib/api", () => ({
   createNote: vi.fn(),
 }));
+
+vi.mock("next/navigation", () => ({
+  usePathname: vi.fn(() => "/"),
+}));
+
+const mockedUsePathname = vi.mocked(usePathname);
+
+beforeEach(() => {
+  mockedUsePathname.mockReturnValue("/");
+});
 
 const NAMES = [
   "AES-256-GCM",
@@ -131,5 +142,46 @@ describe("CryptoPlayground", () => {
     encrypt();
     await valueOf("Resultado");
     expect(createNote).not.toHaveBeenCalled();
+  });
+
+  it("links to the page of the selected algorithm", () => {
+    render(<CryptoPlayground />);
+    expect(screen.getByRole("link", { name: "Saiba mais sobre AES-256-GCM" })).toHaveAttribute(
+      "href",
+      "/algoritmos/aes-gcm",
+    );
+    fireEvent.click(algorithmButton("Cifra de César"));
+    expect(screen.getByRole("link", { name: "Saiba mais sobre Cifra de César" })).toHaveAttribute(
+      "href",
+      "/algoritmos/cesar",
+    );
+  });
+
+  it("links to all algorithms", () => {
+    render(<CryptoPlayground />);
+    expect(screen.getByRole("link", { name: "Ver todos os algoritmos" })).toHaveAttribute("href", "/algoritmos");
+  });
+
+  it("starts with the given algorithm", () => {
+    render(<CryptoPlayground initialAlgorithm="vigenere" />);
+    expect(algorithmButton("Cifra de Vigenère")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByLabelText("Palavra-chave")).toBeInTheDocument();
+  });
+
+  it("does not link to the current page", () => {
+    mockedUsePathname.mockReturnValue("/algoritmos/cesar");
+    render(<CryptoPlayground initialAlgorithm="cesar" />);
+    expect(screen.queryByRole("link", { name: "Saiba mais sobre Cifra de César" })).toBeNull();
+    fireEvent.click(algorithmButton("Base64"));
+    expect(screen.getByRole("link", { name: "Saiba mais sobre Base64" })).toHaveAttribute(
+      "href",
+      "/algoritmos/base64",
+    );
+  });
+
+  it("shows PSS for RSA-OAEP", () => {
+    const { container } = render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("RSA-OAEP"));
+    expect(container.textContent).toContain("PSS");
   });
 });

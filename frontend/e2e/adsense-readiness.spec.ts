@@ -103,7 +103,7 @@ test("robots.txt blocks notes for all crawlers", async ({ request }) => {
   expect(text).toContain("Sitemap: https://notasegura.example/sitemap.xml");
 });
 
-test("sitemap lists the four public pages", async ({ request }) => {
+test("sitemap lists the public pages", async ({ request }) => {
   const res = await request.get("/sitemap.xml");
   expect(res.status()).toBe(200);
   const xml = await res.text();
@@ -113,6 +113,14 @@ test("sitemap lists the four public pages", async ({ request }) => {
     "https://notasegura.example/sobre",
     "https://notasegura.example/privacidade",
     "https://notasegura.example/contato",
+    "https://notasegura.example/algoritmos",
+    "https://notasegura.example/algoritmos/aes-gcm",
+    "https://notasegura.example/algoritmos/aes-cbc",
+    "https://notasegura.example/algoritmos/rsa-oaep",
+    "https://notasegura.example/algoritmos/sha-256",
+    "https://notasegura.example/algoritmos/base64",
+    "https://notasegura.example/algoritmos/cesar",
+    "https://notasegura.example/algoritmos/vigenere",
   ]);
   for (const loc of locs) {
     expect(loc).not.toContain("/termos");
