@@ -1,10 +1,9 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const TRUST_PAGES = ["/sobre", "/privacidade", "/termos", "/contato"];
+const TRUST_PAGES = ["/sobre", "/privacidade", "/contato"];
 const FOOTER_LINKS: Array<[string, string]> = [
   ["Sobre", "/sobre"],
-  ["Privacidade", "/privacidade"],
-  ["Termos", "/termos"],
+  ["Privacidade e Termos", "/privacidade"],
   ["Contato", "/contato"],
 ];
 const CLIENT = "ca-pub-1234567890123456";
@@ -41,8 +40,11 @@ test("trust pages serve prose without JavaScript", async ({ request }) => {
 });
 
 test("footer navigates between trust pages", async ({ page }) => {
-  await page.goto("/termos");
-  await page.locator('nav[aria-label="Rodapé"]').getByRole("link", { name: "Privacidade", exact: true }).click();
+  await page.goto("/sobre");
+  await page
+    .locator('nav[aria-label="Rodapé"]')
+    .getByRole("link", { name: "Privacidade e Termos", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/privacidade$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
@@ -101,7 +103,7 @@ test("robots.txt blocks notes for all crawlers", async ({ request }) => {
   expect(text).toContain("Sitemap: https://notasegura.example/sitemap.xml");
 });
 
-test("sitemap lists the five public pages", async ({ request }) => {
+test("sitemap lists the four public pages", async ({ request }) => {
   const res = await request.get("/sitemap.xml");
   expect(res.status()).toBe(200);
   const xml = await res.text();
@@ -110,9 +112,11 @@ test("sitemap lists the five public pages", async ({ request }) => {
     "https://notasegura.example",
     "https://notasegura.example/sobre",
     "https://notasegura.example/privacidade",
-    "https://notasegura.example/termos",
     "https://notasegura.example/contato",
   ]);
+  for (const loc of locs) {
+    expect(loc).not.toContain("/termos");
+  }
 });
 
 test("ads.txt is served", async ({ request }) => {

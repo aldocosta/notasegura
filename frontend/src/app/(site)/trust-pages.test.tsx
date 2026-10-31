@@ -3,13 +3,11 @@ import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import Sobre from "./sobre/page";
 import Privacidade from "./privacidade/page";
-import Termos from "./termos/page";
 import Contato from "./contato/page";
 
 const PAGES: Array<[string, ComponentType]> = [
   ["Sobre", Sobre],
   ["Privacidade", Privacidade],
-  ["Termos", Termos],
   ["Contato", Contato],
 ];
 
@@ -21,7 +19,6 @@ describe("trust pages", () => {
   it.each<[string, ComponentType]>([
     ["Sobre", Sobre],
     ["Privacidade", Privacidade],
-    ["Termos", Termos],
     ["Contato", Contato],
   ])("%s renders one h1 and at least three paragraphs", (_name, Page) => {
     const { container } = render(<Page />);
@@ -50,11 +47,13 @@ describe("trust pages", () => {
     }
   });
 
-  it("shows an icon next to every h2 on /privacidade", () => {
+  it("shows an icon next to every h2 and h3 on /privacidade", () => {
     render(<Privacidade />);
-    const headings = screen.getAllByRole("heading", { level: 2 });
-    expect(headings.length).toBeGreaterThan(0);
-    for (const heading of headings) {
+    const h2s = screen.getAllByRole("heading", { level: 2 });
+    const h3s = screen.getAllByRole("heading", { level: 3 });
+    expect(h2s.length).toBeGreaterThanOrEqual(2);
+    expect(h3s.length).toBeGreaterThanOrEqual(9);
+    for (const heading of [...h2s, ...h3s]) {
       expect(heading.parentElement!.querySelector("svg"), heading.textContent ?? "").not.toBeNull();
     }
   });

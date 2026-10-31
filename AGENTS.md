@@ -42,6 +42,7 @@ SafeNote POC: anonymous, self-destructing encrypted text sharing (clone of safen
 - **NO test execution during RPI/spec phase.** While researching, planning or writing specs (`proposal.md`, `design.md`, `tasks.md`, `specs/`), DO NOT run `npm test`, `jest`, `./validate.sh` or any test command. Stay in writing mode only.
 - **Tests are delegated.** Any test execution (unit/e2e/validate) MUST be delegated to **QA Tester** via `maestri ask "Tester" ...`. The Mestre does NOT run tests directly.
 - **Don't weaken tests.** Never change assertions to make failing tests pass. Fix implementation or raise with user.
+- **QA Tester may use the attached browser.** The QA Tester is allowed (and encouraged) to use the browser portal for end-to-end/UI validation when it adds coverage beyond unit/e2e tests (smoke, visual checks, form flows).
 
 - Per-project scripts: `backend/validate.sh`, `frontend/validate.sh` (run independently).
 - Aggregator: `./validate.sh` runs both (backend then frontend).

@@ -1,0 +1,93 @@
+import { test, expect, type Page } from "@playwright/test";
+
+const DESKTOP = { width: 1280, height: 800 };
+const TABLET = { width: 640, height: 800 };
+const MOBILE = { width: 375, height: 812 };
+const TRUST_LINKS: Array<[string, string]> = [
+  ["Sobre", "/sobre"],
+  ["Privacidade e Termos", "/privacidade"],
+  ["Contato", "/contato"],
+];
+
+function mainNav(page: Page) {
+  return page.locator('nav[aria-label="Principal"]');
+}
+
+function fitsViewport(page: Page) {
+  return page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+}
+
+function countTags(html: string, tag: string): number {
+  return (html.match(new RegExp(`<${tag}[\\s>]`, "g")) ?? []).length;
+}
+
+test.beforeEach(async ({ page }) => {
+  await page.route("https://pagead2.googlesyndication.com/**", (route) => route.fulfill({ status: 200, body: "" }));
+});
+
+test("terms URL redirects permanently", async ({ request }) => {
+  const res = await request.get("/termos", { maxRedirects: 0 });
+  expect(res.status()).toBe(308);
+  expect(res.headers()["location"]).toMatch(/\/privacidade#termos$/);
+});
+
+test("old terms link lands on the terms part", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto("/termos");
+  await expect(page).toHaveURL(/\/privacidade#termos$/);
+  await expect(page.getByRole("heading", { level: 2, name: "Termos de Uso" })).toBeInViewport();
+});
+
+test("unified page serves both parts without JavaScript", async ({ request }) => {
+  const res = await request.get("/privacidade");
+  expect(res.status()).toBe(200);
+  const html = await res.text();
+  expect(countTags(html, "h1")).toBe(1);
+  expect(html).toContain('id="privacidade"');
+  expect(html).toContain('id="termos"');
+  expect(html).toContain("Política de Privacidade e Termos de Uso");
+  expect(html).not.toContain('href="/termos"');
+});
+
+test("anchor links jump to each part", async ({ page }) => {
+  await page.goto("/privacidade");
+  await page.locator('a[href="#termos"]').click();
+  await expect(page).toHaveURL(/#termos$/);
+  await expect(page.getByRole("heading", { level: 2, name: "Termos de Uso" })).toBeInViewport();
+  await page.locator('a[href="#privacidade"]').click();
+  await expect(page.getByRole("heading", { level: 2, name: "Política de Privacidade" })).toBeInViewport();
+});
+
+test("menu and footer show three trust links", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto("/");
+  for (const selector of ['nav[aria-label="Principal"]', 'nav[aria-label="Rodapé"]']) {
+    const links = page.locator(selector).getByRole("link");
+    await expect(links, selector).toHaveCount(TRUST_LINKS.length);
+    for (const [i, [name, href]] of TRUST_LINKS.entries()) {
+      const link = links.nth(i);
+      await expect(link, `${selector} ${name}`).toHaveText(name);
+      await expect(link, `${selector} ${name}`).toHaveAttribute("href", href);
+      await expect(link, `${selector} ${name}`).toBeVisible();
+    }
+  }
+});
+
+test("header fits at 640px", async ({ page }) => {
+  await page.setViewportSize(TABLET);
+  await page.goto("/");
+  for (const [name] of TRUST_LINKS) {
+    await expect(mainNav(page).getByRole("link", { name, exact: true }), name).toBeVisible();
+  }
+  expect(await fitsViewport(page)).toBe(true);
+});
+
+test("unified page has no horizontal scroll on mobile", async ({ page }) => {
+  await page.setViewportSize(MOBILE);
+  await page.goto("/privacidade");
+  const menuButton = mainNav(page).getByRole("button", { name: "Menu", exact: true });
+  expect(await fitsViewport(page), "menu closed").toBe(true);
+  await menuButton.click();
+  await expect(menuButton).toHaveAttribute("aria-expanded", "true");
+  expect(await fitsViewport(page), "menu open").toBe(true);
+});

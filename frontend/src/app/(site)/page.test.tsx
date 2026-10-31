@@ -88,6 +88,14 @@ describe("Home - Como funciona CTA", () => {
     expect(text).not.toContain("(1-10)");
   });
 
+  it("places the playground after the create form", () => {
+    render(<Home />);
+    const form = document.getElementById("criar-nota")!;
+    const playground = document.getElementById("testar-algoritmos")!;
+    expect(form.compareDocumentPosition(playground) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(playground).getByRole("heading", { level: 2, name: "Teste os algoritmos" })).toBeInTheDocument();
+  });
+
   it('keeps "Como Funciona!" scrolling to #como-funciona', () => {
     render(<Home />);
     fireEvent.click(screen.getByRole("link", { name: "Como Funciona!" }));

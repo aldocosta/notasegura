@@ -6,8 +6,7 @@ export const POLICY_UPDATED_AT = "30 de outubro de 2026";
 
 export const TRUST_PAGES = [
   { href: "/sobre", label: "Sobre" },
-  { href: "/privacidade", label: "Privacidade" },
-  { href: "/termos", label: "Termos" },
+  { href: "/privacidade", label: "Privacidade e Termos" },
   { href: "/contato", label: "Contato" },
 ] as const;
 

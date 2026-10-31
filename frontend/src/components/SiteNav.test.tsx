@@ -28,10 +28,10 @@ afterEach(() => {
 });
 
 describe("SiteNav", () => {
-  it("renders the four links in order", () => {
+  it("renders the three links in order", () => {
     render(<SiteHeader />);
     const links = within(mainNav()).getAllByRole("link");
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(3);
     expect(links.map((l) => [l.textContent, l.getAttribute("href")])).toEqual(
       NAV_LINKS.map((l) => [l.label, l.href]),
     );
@@ -41,8 +41,8 @@ describe("SiteNav", () => {
     mockedUsePathname.mockReturnValue("/privacidade");
     render(<SiteHeader />);
     const nav = within(mainNav());
-    expect(nav.getByRole("link", { name: "Privacidade" })).toHaveAttribute("aria-current", "page");
-    for (const name of ["Sobre", "Termos", "Contato"]) {
+    expect(nav.getByRole("link", { name: "Privacidade e Termos" })).toHaveAttribute("aria-current", "page");
+    for (const name of ["Sobre", "Contato"]) {
       expect(nav.getByRole("link", { name })).not.toHaveAttribute("aria-current");
     }
   });

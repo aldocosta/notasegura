@@ -4,8 +4,7 @@ const DESKTOP = { width: 1280, height: 800 };
 const MOBILE = { width: 375, height: 812 };
 const NAV_LINKS: Array<[string, string]> = [
   ["Sobre", "/sobre"],
-  ["Privacidade", "/privacidade"],
-  ["Termos", "/termos"],
+  ["Privacidade e Termos", "/privacidade"],
   ["Contato", "/contato"],
 ];
 
@@ -35,8 +34,8 @@ test("desktop shows the menu on every page", async ({ page }) => {
 });
 
 test("current page is marked", async ({ page }) => {
-  await page.goto("/termos");
-  await expect(mainNav(page).getByRole("link", { name: "Termos", exact: true })).toHaveAttribute(
+  await page.goto("/privacidade");
+  await expect(mainNav(page).getByRole("link", { name: "Privacidade e Termos", exact: true })).toHaveAttribute(
     "aria-current",
     "page",
   );
