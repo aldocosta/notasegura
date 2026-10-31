@@ -75,7 +75,7 @@ describe("AlgorithmPage", () => {
   });
 
   it("calls notFound for an unknown id", async () => {
-    await expect(AlgorithmPage({ params: Promise.resolve({ id: "rot13" }) })).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(AlgorithmPage({ params: Promise.resolve({ id: "rot47" }) })).rejects.toThrow("NEXT_NOT_FOUND");
     expect(notFound).toHaveBeenCalledTimes(1);
   });
 });

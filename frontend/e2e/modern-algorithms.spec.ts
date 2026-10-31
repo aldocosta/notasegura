@@ -5,8 +5,20 @@ const CATEGORIES: Array<[string, string[]]> = [
   ["Hash", ["SHA-256", "SHA-512", "SHA-1", "MD5"]],
   ["Autenticação e assinatura", ["HMAC-SHA-256", "ECDSA", "Ed25519", "RSA-PSS"]],
   ["Troca e derivação de chaves", ["ECDH", "PBKDF2"]],
-  ["Codificação", ["Base64"]],
-  ["Cifras clássicas", ["Cifra de César", "Cifra de Vigenère"]],
+  ["Codificação", ["Base64", "Hexadecimal"]],
+  [
+    "Cifras clássicas",
+    [
+      "Cifra de César",
+      "ROT13",
+      "Cifra Atbash",
+      "Cifra de Vigenère",
+      "Cifra de Playfair",
+      "Cerca de trilho",
+      "Máquina Enigma",
+      "Cifra de Vernam",
+    ],
+  ],
 ];
 const HASHES: Array<[string, string]> = [
   [

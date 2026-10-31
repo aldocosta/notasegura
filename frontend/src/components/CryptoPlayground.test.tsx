@@ -40,16 +40,37 @@ const NAMES = [
   "ECDH",
   "PBKDF2",
   "Base64",
+  "Hexadecimal",
   "Cifra de César",
+  "ROT13",
+  "Cifra Atbash",
   "Cifra de Vigenère",
+  "Cifra de Playfair",
+  "Cerca de trilho",
+  "Máquina Enigma",
+  "Cifra de Vernam",
 ];
+const PLAYFAIR_NOTE = "A Playfair remove espaços e acentos, troca J por I e insere X entre letras repetidas.";
+const ENIGMA_NOTE = "A Enigma só tinha letras maiúsculas.";
 const CATEGORIES: Array<[string, string[]]> = [
   ["Criptografia", ["AES-256-GCM", "ChaCha20-Poly1305", "AES-256-CBC", "AES-256-CTR", "RSA-OAEP"]],
   ["Hash", ["SHA-256", "SHA-512", "SHA-1", "MD5"]],
   ["Autenticação e assinatura", ["HMAC-SHA-256", "ECDSA", "Ed25519", "RSA-PSS"]],
   ["Troca e derivação de chaves", ["ECDH", "PBKDF2"]],
-  ["Codificação", ["Base64"]],
-  ["Cifras clássicas", ["Cifra de César", "Cifra de Vigenère"]],
+  ["Codificação", ["Base64", "Hexadecimal"]],
+  [
+    "Cifras clássicas",
+    [
+      "Cifra de César",
+      "ROT13",
+      "Cifra Atbash",
+      "Cifra de Vigenère",
+      "Cifra de Playfair",
+      "Cerca de trilho",
+      "Máquina Enigma",
+      "Cifra de Vernam",
+    ],
+  ],
 ];
 const ABC_DIGEST = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
 
@@ -80,9 +101,10 @@ async function valueOf(label: string) {
 }
 
 describe("CryptoPlayground", () => {
-  it("renders eighteen buttons with AES-256-GCM pressed", () => {
+  it("renders twenty-five buttons with AES-256-GCM pressed", () => {
     render(<CryptoPlayground />);
     const buttons = within(screen.getByRole("group", { name: "Algoritmos" })).getAllByRole("button");
+    expect(buttons).toHaveLength(25);
     expect(buttons.map((b) => b.textContent)).toEqual(NAMES);
     const pressed = buttons.filter((b) => b.getAttribute("aria-pressed") === "true");
     expect(pressed).toHaveLength(1);
@@ -103,17 +125,53 @@ describe("CryptoPlayground", () => {
     expect(screen.queryByLabelText("Deslocamento")).toBeNull();
   });
 
-  it("shows the keyword field only for Vigenère", () => {
+  it("shows the fields of each classic cipher", () => {
     render(<CryptoPlayground />);
     for (const name of NAMES) {
       fireEvent.click(algorithmButton(name));
-      const field = screen.queryByLabelText("Palavra-chave");
-      if (name === "Cifra de Vigenère") {
-        expect(field, name).toBeInTheDocument();
+      const start = screen.queryByLabelText("Posição inicial");
+      const rails = screen.queryByLabelText("Trilhos");
+      const keyword = screen.queryByLabelText("Palavra-chave");
+      if (name === "Máquina Enigma") {
+        expect(start, name).toHaveValue("AAA");
       } else {
-        expect(field, name).toBeNull();
+        expect(start, name).toBeNull();
+      }
+      if (name === "Cerca de trilho") {
+        expect(rails, name).toHaveValue(3);
+      } else {
+        expect(rails, name).toBeNull();
+      }
+      if (name === "Cifra de Vigenère" || name === "Cifra de Playfair") {
+        expect(keyword, name).toBeInTheDocument();
+      } else {
+        expect(keyword, name).toBeNull();
       }
     }
+  });
+
+  it("shows the Playfair note", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("Cifra de Playfair"));
+    fireEvent.change(screen.getByLabelText("Palavra-chave"), { target: { value: "PLAYFAIREXAMPLE" } });
+    typeText("Hide the gold in the tree stump");
+    encrypt();
+    expect(await valueOf("Resultado")).toHaveTextContent("BMODZBXDNABEKUDMUIXMMOUVIF");
+    expect(screen.queryByText(PLAYFAIR_NOTE)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Decifrar" }));
+    expect(await valueOf("Texto decifrado")).toHaveTextContent("HIDETHEGOLDINTHETREXESTUMP");
+    expect(screen.getByText(PLAYFAIR_NOTE)).toBeInTheDocument();
+  });
+
+  it("encrypts with the Enigma", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("Máquina Enigma"));
+    typeText("AAAAA");
+    encrypt();
+    expect(await valueOf("Resultado")).toHaveTextContent("BDZGO");
+    fireEvent.click(screen.getByRole("button", { name: "Decifrar" }));
+    expect(await valueOf("Texto decifrado")).toHaveTextContent("AAAAA");
+    expect(screen.getByText(ENIGMA_NOTE)).toBeInTheDocument();
   });
 
   it("encrypts and decrypts with César", async () => {

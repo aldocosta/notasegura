@@ -17,8 +17,15 @@ const ALGORITHMS: Array<[string, string]> = [
   ["ecdh", "ECDH"],
   ["pbkdf2", "PBKDF2"],
   ["base64", "Base64"],
+  ["hex", "Hexadecimal"],
   ["cesar", "Cifra de César"],
+  ["rot13", "ROT13"],
+  ["atbash", "Cifra Atbash"],
   ["vigenere", "Cifra de Vigenère"],
+  ["playfair", "Cifra de Playfair"],
+  ["rail-fence", "Cerca de trilho"],
+  ["enigma", "Máquina Enigma"],
+  ["vernam", "Cifra de Vernam"],
 ];
 const SECTION_TITLES = ["O que é", "Como funciona", "Exemplo", "Onde é usado", "Pontos fortes e fracos", "Quando usar"];
 const CLIENT = "ca-pub-1234567890123456";
@@ -83,7 +90,7 @@ test("César article shows the example", async ({ request }) => {
 });
 
 test("unknown algorithm returns 404", async ({ request }) => {
-  const res = await request.get("/algoritmos/rot13");
+  const res = await request.get("/algoritmos/rot47");
   expect(res.status()).toBe(404);
 });
 

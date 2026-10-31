@@ -8,6 +8,8 @@ import { algorithmHref } from "@/lib/algorithms/href";
 import { ALGORITHMS } from "@/lib/playground";
 import { actionLabels } from "@/lib/playground/actions";
 import { algorithmsByCategory } from "@/lib/playground/categories";
+import { DEFAULT_START } from "@/lib/playground/enigma";
+import { DEFAULT_RAILS } from "@/lib/playground/rail-fence";
 import type { AlgorithmId, EncryptResult } from "@/lib/playground/types";
 import { MAX_TEXT_LENGTH, validateInput } from "@/lib/playground/validate";
 import { AlgorithmUnsupportedError, WebCryptoUnavailableError } from "@/lib/playground/web-crypto";
@@ -40,6 +42,8 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
   const [text, setText] = useState("");
   const [shift, setShift] = useState("3");
   const [keyword, setKeyword] = useState("");
+  const [rails, setRails] = useState(String(DEFAULT_RAILS));
+  const [start, setStart] = useState(DEFAULT_START);
   const [result, setResult] = useState<EncryptResult | null>(null);
   const [decrypted, setDecrypted] = useState<string | null>(null);
   const [verifyText, setVerifyText] = useState("");
@@ -67,7 +71,7 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
   async function encrypt(e: React.FormEvent) {
     e.preventDefault();
     reset();
-    const options = { shift: Number(shift), keyword };
+    const options = { shift: Number(shift), keyword, rails: Number(rails), start };
     const message = validateInput(algorithm.id, text, options);
     if (message) {
       setError(message);
@@ -246,7 +250,7 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
           </div>
         )}
 
-        {algorithm.id === "vigenere" && (
+        {(algorithm.id === "vigenere" || algorithm.id === "playfair") && (
           <div>
             <label htmlFor={`${ids}-palavra-chave`} className="mb-1 block text-sm text-muted">
               Palavra-chave
@@ -259,6 +263,43 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               className={`${FIELD_CLASS} p-2 sm:max-w-60`}
+            />
+          </div>
+        )}
+
+        {algorithm.id === "rail-fence" && (
+          <div>
+            <label htmlFor={`${ids}-trilhos`} className="mb-1 block text-sm text-muted">
+              Trilhos
+            </label>
+            <input
+              id={`${ids}-trilhos`}
+              type="number"
+              inputMode="numeric"
+              min={2}
+              max={10}
+              step={1}
+              value={rails}
+              onChange={(e) => setRails(e.target.value)}
+              className={`${FIELD_CLASS} p-2 sm:max-w-40`}
+            />
+          </div>
+        )}
+
+        {algorithm.id === "enigma" && (
+          <div>
+            <label htmlFor={`${ids}-posicao`} className="mb-1 block text-sm text-muted">
+              Posição inicial
+            </label>
+            <input
+              id={`${ids}-posicao`}
+              type="text"
+              autoComplete="off"
+              spellCheck={false}
+              maxLength={3}
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
+              className={`${FIELD_CLASS} p-2 uppercase sm:max-w-40`}
             />
           </div>
         )}
@@ -298,12 +339,15 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
             {renderWayBack(result)}
 
             {decrypted !== null && (
-              <dl>
-                <div>
-                  <dt className="font-bold text-ink">{labels.backResult}</dt>
-                  <dd className="mt-1 whitespace-pre-wrap break-words">{decrypted}</dd>
-                </div>
-              </dl>
+              <div>
+                <dl>
+                  <div>
+                    <dt className="font-bold text-ink">{labels.backResult}</dt>
+                    <dd className="mt-1 whitespace-pre-wrap break-words">{decrypted}</dd>
+                  </div>
+                </dl>
+                {result.note && <p className="mt-2 text-xs text-muted">{result.note}</p>}
+              </div>
             )}
           </div>
         )}

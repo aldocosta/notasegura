@@ -130,8 +130,15 @@ test("sitemap lists the public pages", async ({ request }) => {
     "https://notasegura.example/algoritmos/ecdh",
     "https://notasegura.example/algoritmos/pbkdf2",
     "https://notasegura.example/algoritmos/base64",
+    "https://notasegura.example/algoritmos/hex",
     "https://notasegura.example/algoritmos/cesar",
+    "https://notasegura.example/algoritmos/rot13",
+    "https://notasegura.example/algoritmos/atbash",
     "https://notasegura.example/algoritmos/vigenere",
+    "https://notasegura.example/algoritmos/playfair",
+    "https://notasegura.example/algoritmos/rail-fence",
+    "https://notasegura.example/algoritmos/enigma",
+    "https://notasegura.example/algoritmos/vernam",
   ]);
   for (const loc of locs) {
     expect(loc).not.toContain("/termos");

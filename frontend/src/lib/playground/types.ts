@@ -15,8 +15,15 @@ export type AlgorithmId =
   | "ecdh"
   | "pbkdf2"
   | "base64"
+  | "hex"
   | "cesar"
-  | "vigenere";
+  | "rot13"
+  | "atbash"
+  | "vigenere"
+  | "playfair"
+  | "rail-fence"
+  | "enigma"
+  | "vernam";
 
 export type AlgorithmKind =
   | "Criptografia simétrica"
@@ -31,13 +38,14 @@ export type AlgorithmKind =
 
 export type Detail = { label: string; value: string };
 
-export type EncryptOptions = { shift?: number; keyword?: string };
+export type EncryptOptions = { shift?: number; keyword?: string; rails?: number; start?: string };
 
 export type EncryptResult = {
   output: string;
   details: Detail[];
   decrypt?: () => Promise<string>;
   verify?: (text: string) => Promise<boolean>;
+  note?: string;
 };
 
 export type Algorithm = {

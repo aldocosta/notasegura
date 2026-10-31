@@ -55,6 +55,13 @@ const REQUIRED_TERMS: Record<AlgorithmId, string[]> = {
   base64: ["RFC 4648", "33%", "b2zDoQ==", "MIME", "JWT", "Base64url"],
   cesar: ["Júlio César", "Suetônio", "25", "Def, abc!", "ROT13", "Al-Kindi"],
   vigenere: ["Bellaso", "1553", "LXFOPVEFRNHR", "Kasiski", "índice de coincidência", "one-time pad"],
+  hex: ["16", "0 a 9", "dobro", "6f6cc3a1", "hash", "CSS", "#ff0000"],
+  rot13: ["César", "13", "duas vezes", "Uryyb", "Usenet"],
+  atbash: ["hebraico", "Jeremias", "substituição", "sem chave", "Zyx, cba!"],
+  playfair: ["Wheatstone", "1854", "5x5", "pares", "BMODZBXDNABEKUDMUIXMMOUVIF", "Kennedy"],
+  "rail-fence": ["transposição", "zigue-zague", "trilhos", "WECRLTEERDSOEEFEAOCAIVDEN", "frequência"],
+  enigma: ["Scherbius", "rotores", "refletor", "nunca", "Rejewski", "Turing", "Bletchley Park", "BDZGO"],
+  vernam: ["1917", "XOR", "uma única vez", "Shannon", "sigilo perfeito", "Venona"],
 };
 
 describe("ARTICLES", () => {
@@ -119,7 +126,7 @@ describe("article helpers", () => {
 
   it("finds only known algorithms", () => {
     expect(findAlgorithm("cesar")?.name).toBe("Cifra de César");
-    expect(findAlgorithm("rot13")).toBeUndefined();
+    expect(findAlgorithm("rot47")).toBeUndefined();
   });
 
   it("counts words", () => {

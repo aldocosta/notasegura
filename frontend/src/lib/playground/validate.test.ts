@@ -35,4 +35,32 @@ describe("validateInput", () => {
       expect(typeof validateInput("cesar", "texto", { shift }), String(shift)).toBe("string");
     }
   });
+
+  it("validates the rails", () => {
+    expect(validateInput("rail-fence", "texto", { rails: 2 })).toBeNull();
+    expect(validateInput("rail-fence", "texto", { rails: 10 })).toBeNull();
+    for (const rails of [1, 11, 2.5]) {
+      expect(validateInput("rail-fence", "texto", { rails }), String(rails)).toBe(
+        "O número de trilhos deve ser um inteiro de 2 a 10.",
+      );
+    }
+  });
+
+  it("validates the Enigma start", () => {
+    expect(validateInput("enigma", "texto", { start: "AAA" })).toBeNull();
+    expect(validateInput("enigma", "texto", { start: "qwe" })).toBeNull();
+    for (const start of ["A1", "AAAA", ""]) {
+      expect(validateInput("enigma", "texto", { start }), start).toBe(
+        "A posição inicial deve ter três letras de A a Z.",
+      );
+    }
+  });
+
+  it("validates the Playfair keyword and text", () => {
+    expect(validateInput("playfair", "texto", { keyword: "chave" })).toBeNull();
+    expect(typeof validateInput("playfair", "texto", { keyword: "" })).toBe("string");
+    expect(validateInput("playfair", "123 !?", { keyword: "chave" })).toBe(
+      "O texto precisa ter pelo menos uma letra de A a Z.",
+    );
+  });
 });
