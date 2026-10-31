@@ -6,21 +6,30 @@ import { usePathname } from "next/navigation";
 import SafetyBadge from "@/components/SafetyBadge";
 import { algorithmHref } from "@/lib/algorithms/href";
 import { ALGORITHMS } from "@/lib/playground";
+import { actionLabels } from "@/lib/playground/actions";
+import { algorithmsByCategory } from "@/lib/playground/categories";
 import type { AlgorithmId, EncryptResult } from "@/lib/playground/types";
 import { MAX_TEXT_LENGTH, validateInput } from "@/lib/playground/validate";
-import { WebCryptoUnavailableError } from "@/lib/playground/web-crypto";
+import { AlgorithmUnsupportedError, WebCryptoUnavailableError } from "@/lib/playground/web-crypto";
 import { ALGORITHMS_PATH } from "@/lib/site";
 
 const FOCUS_RING = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 const FIELD_CLASS =
   "w-full rounded border border-hairline-strong bg-canvas text-sm focus:outline-none focus:ring-2 focus:ring-primary";
+const SECONDARY_BUTTON_CLASS = `rounded-xs border border-primary bg-canvas-soft px-4 py-2 text-sm font-bold text-primary hover:bg-mint-100 ${FOCUS_RING}`;
 const UNSUPPORTED_MESSAGE = "Seu navegador não permite criptografia nesta página.";
+const ALGORITHM_UNSUPPORTED_MESSAGE = "Seu navegador não permite este algoritmo.";
 const FAILURE_MESSAGE = "Não foi possível concluir a operação. Tente novamente.";
+const VALID_MESSAGE = "Válido: o texto confere com o resultado.";
+const INVALID_MESSAGE = "Inválido: o texto não confere com o resultado.";
+const CATEGORIES = algorithmsByCategory();
 
 const LINK_CLASS = `rounded-xs font-bold text-primary hover:underline ${FOCUS_RING}`;
 
 function failureMessage(err: unknown): string {
-  return err instanceof WebCryptoUnavailableError ? UNSUPPORTED_MESSAGE : FAILURE_MESSAGE;
+  if (err instanceof WebCryptoUnavailableError) return UNSUPPORTED_MESSAGE;
+  if (err instanceof AlgorithmUnsupportedError) return ALGORITHM_UNSUPPORTED_MESSAGE;
+  return FAILURE_MESSAGE;
 }
 
 export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }: { initialAlgorithm?: AlgorithmId }) {
@@ -33,15 +42,19 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
   const [keyword, setKeyword] = useState("");
   const [result, setResult] = useState<EncryptResult | null>(null);
   const [decrypted, setDecrypted] = useState<string | null>(null);
+  const [verifyText, setVerifyText] = useState("");
+  const [verified, setVerified] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const algorithm = ALGORITHMS.find((a) => a.id === algorithmId) ?? ALGORITHMS[0];
+  const labels = actionLabels(algorithm.kind);
 
   function reset() {
     runRef.current++;
     setResult(null);
     setDecrypted(null);
+    setVerified(null);
     setError(null);
     setBusy(false);
   }
@@ -65,7 +78,10 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
     setBusy(true);
     try {
       const encrypted = await algorithm.encrypt(text, options);
-      if (run === runRef.current) setResult(encrypted);
+      if (run === runRef.current) {
+        setResult(encrypted);
+        setVerifyText(text);
+      }
     } catch (err) {
       if (run === runRef.current) setError(failureMessage(err));
     } finally {
@@ -84,6 +100,58 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
     }
   }
 
+  async function verify() {
+    if (!result?.verify) return;
+    const run = runRef.current;
+    try {
+      const valid = await result.verify(verifyText);
+      if (run === runRef.current) setVerified(valid);
+    } catch (err) {
+      if (run === runRef.current) setError(failureMessage(err));
+    }
+  }
+
+  function renderWayBack(current: EncryptResult) {
+    if (current.decrypt) {
+      return (
+        <button type="button" onClick={decrypt} className={SECONDARY_BUTTON_CLASS}>
+          {labels.back}
+        </button>
+      );
+    }
+    if (current.verify) {
+      return (
+        <div className="space-y-3">
+          <div>
+            <label htmlFor={`${ids}-verificar`} className="mb-1 block text-sm text-muted">
+              Texto para verificar
+            </label>
+            <textarea
+              id={`${ids}-verificar`}
+              value={verifyText}
+              maxLength={MAX_TEXT_LENGTH}
+              onChange={(e) => {
+                setVerifyText(e.target.value);
+                setVerified(null);
+              }}
+              rows={2}
+              className={`${FIELD_CLASS} p-3`}
+            />
+          </div>
+          <button type="button" onClick={verify} className={SECONDARY_BUTTON_CLASS}>
+            Verificar
+          </button>
+          {verified !== null && (
+            <p className={`font-bold ${verified ? "text-primary" : "text-error"}`}>
+              {verified ? VALID_MESSAGE : INVALID_MESSAGE}
+            </p>
+          )}
+        </div>
+      );
+    }
+    return <p className="text-muted">Um hash não pode ser desfeito: não existe chave para voltar ao texto original.</p>;
+  }
+
   return (
     <div className="rounded border border-hairline-strong bg-mint-50 p-5 sm:p-7">
       <h2 className="text-lg font-bold text-ink sm:text-xl">Teste os algoritmos</h2>
@@ -91,24 +159,31 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
         Escolha um algoritmo, escreva um texto e veja como ele fica. Tudo acontece no seu navegador e nada é salvo.
       </p>
 
-      <div role="group" aria-label="Algoritmos" className="mt-4 flex flex-wrap gap-2">
-        {ALGORITHMS.map((a) => {
-          const pressed = a.id === algorithm.id;
-          const color = pressed
-            ? "border-primary bg-primary text-on-primary"
-            : "border-hairline-strong bg-canvas-soft text-primary hover:bg-mint-100";
-          return (
-            <button
-              key={a.id}
-              type="button"
-              aria-pressed={pressed}
-              onClick={() => select(a.id)}
-              className={`rounded-xs border px-3 py-2 text-sm font-bold ${color} ${FOCUS_RING}`}
-            >
-              {a.name}
-            </button>
-          );
-        })}
+      <div role="group" aria-label="Algoritmos" className="mt-4 space-y-3">
+        {CATEGORIES.map((category) => (
+          <div key={category.name} role="group" aria-label={category.name}>
+            <p className="mb-1 text-xs font-bold text-muted">{category.name}</p>
+            <div className="flex flex-wrap gap-2">
+              {category.algorithms.map((a) => {
+                const pressed = a.id === algorithm.id;
+                const color = pressed
+                  ? "border-primary bg-primary text-on-primary"
+                  : "border-hairline-strong bg-canvas-soft text-primary hover:bg-mint-100";
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    aria-pressed={pressed}
+                    onClick={() => select(a.id)}
+                    className={`rounded-xs border px-3 py-2 text-sm font-bold ${color} ${FOCUS_RING}`}
+                  >
+                    {a.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="mt-4 rounded border border-hairline-strong bg-canvas p-4">
@@ -137,7 +212,7 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
       <form onSubmit={encrypt} noValidate className="mt-4 space-y-4">
         <div>
           <label htmlFor={`${ids}-texto`} className="mb-1 block text-sm text-muted">
-            Texto para encriptar
+            {labels.input}
           </label>
           <textarea
             id={`${ids}-texto`}
@@ -193,7 +268,7 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
           disabled={busy}
           className={`w-full rounded bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-deep disabled:opacity-60 sm:w-auto ${FOCUS_RING}`}
         >
-          {busy ? "Encriptando..." : "Encriptar"}
+          {busy ? labels.running : labels.run}
         </button>
         {error && (
           <p role="alert" className="text-sm text-error">
@@ -220,24 +295,12 @@ export default function CryptoPlayground({ initialAlgorithm = ALGORITHMS[0].id }
               ))}
             </dl>
 
-            {result.decrypt ? (
-              <button
-                type="button"
-                onClick={decrypt}
-                className={`rounded-xs border border-primary bg-canvas-soft px-4 py-2 text-sm font-bold text-primary hover:bg-mint-100 ${FOCUS_RING}`}
-              >
-                Decifrar
-              </button>
-            ) : (
-              <p className="text-muted">
-                Um hash não pode ser desfeito: não existe chave para voltar ao texto original.
-              </p>
-            )}
+            {renderWayBack(result)}
 
             {decrypted !== null && (
               <dl>
                 <div>
-                  <dt className="font-bold text-ink">Texto decifrado</dt>
+                  <dt className="font-bold text-ink">{labels.backResult}</dt>
                   <dd className="mt-1 whitespace-pre-wrap break-words">{decrypted}</dd>
                 </div>
               </dl>

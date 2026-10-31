@@ -12,6 +12,11 @@ vi.mock("next/navigation", () => ({
   usePathname: vi.fn(() => "/"),
 }));
 
+vi.mock("@/lib/playground/ed25519", async () => {
+  const { AlgorithmUnsupportedError } = await import("@/lib/playground/web-crypto");
+  return { encrypt: vi.fn(() => Promise.reject(new AlgorithmUnsupportedError())) };
+});
+
 const mockedUsePathname = vi.mocked(usePathname);
 
 beforeEach(() => {
@@ -20,12 +25,31 @@ beforeEach(() => {
 
 const NAMES = [
   "AES-256-GCM",
+  "ChaCha20-Poly1305",
   "AES-256-CBC",
+  "AES-256-CTR",
   "RSA-OAEP",
   "SHA-256",
+  "SHA-512",
+  "SHA-1",
+  "MD5",
+  "HMAC-SHA-256",
+  "ECDSA",
+  "Ed25519",
+  "RSA-PSS",
+  "ECDH",
+  "PBKDF2",
   "Base64",
   "Cifra de César",
   "Cifra de Vigenère",
+];
+const CATEGORIES: Array<[string, string[]]> = [
+  ["Criptografia", ["AES-256-GCM", "ChaCha20-Poly1305", "AES-256-CBC", "AES-256-CTR", "RSA-OAEP"]],
+  ["Hash", ["SHA-256", "SHA-512", "SHA-1", "MD5"]],
+  ["Autenticação e assinatura", ["HMAC-SHA-256", "ECDSA", "Ed25519", "RSA-PSS"]],
+  ["Troca e derivação de chaves", ["ECDH", "PBKDF2"]],
+  ["Codificação", ["Base64"]],
+  ["Cifras clássicas", ["Cifra de César", "Cifra de Vigenère"]],
 ];
 const ABC_DIGEST = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
 
@@ -38,12 +62,16 @@ function algorithmButton(name: string) {
   return within(screen.getByRole("group", { name: "Algoritmos" })).getByRole("button", { name });
 }
 
-function typeText(value: string) {
-  fireEvent.change(screen.getByLabelText("Texto para encriptar"), { target: { value } });
+function typeText(value: string, label = "Texto") {
+  fireEvent.change(screen.getByLabelText(label), { target: { value } });
 }
 
-function encrypt() {
-  fireEvent.click(screen.getByRole("button", { name: "Encriptar" }));
+function encrypt(label = "Encriptar") {
+  fireEvent.click(screen.getByRole("button", { name: label }));
+}
+
+function explanation() {
+  return within(screen.getByRole("heading", { level: 3 }).parentElement!.parentElement!);
 }
 
 async function valueOf(label: string) {
@@ -52,7 +80,7 @@ async function valueOf(label: string) {
 }
 
 describe("CryptoPlayground", () => {
-  it("renders seven buttons with AES-256-GCM pressed", () => {
+  it("renders eighteen buttons with AES-256-GCM pressed", () => {
     render(<CryptoPlayground />);
     const buttons = within(screen.getByRole("group", { name: "Algoritmos" })).getAllByRole("button");
     expect(buttons.map((b) => b.textContent)).toEqual(NAMES);
@@ -65,13 +93,13 @@ describe("CryptoPlayground", () => {
     render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("Cifra de César"));
     expect(algorithmButton("Cifra de César")).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("Cifra clássica")).toBeInTheDocument();
-    expect(screen.getByText("Inseguro")).toBeInTheDocument();
+    expect(explanation().getByText("Cifra clássica")).toBeInTheDocument();
+    expect(explanation().getByText("Inseguro")).toBeInTheDocument();
     expect(screen.getByLabelText("Deslocamento")).toBeInTheDocument();
 
     fireEvent.click(algorithmButton("Base64"));
-    expect(screen.getByText("Codificação")).toBeInTheDocument();
-    expect(screen.getByText("Não é criptografia")).toBeInTheDocument();
+    expect(explanation().getByText("Codificação")).toBeInTheDocument();
+    expect(explanation().getByText("Não é criptografia")).toBeInTheDocument();
     expect(screen.queryByLabelText("Deslocamento")).toBeNull();
   });
 
@@ -102,7 +130,7 @@ describe("CryptoPlayground", () => {
     render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("SHA-256"));
     typeText("abc");
-    encrypt();
+    encrypt("Gerar hash");
     expect(await valueOf("Resultado")).toHaveTextContent(ABC_DIGEST);
     expect(screen.queryByRole("button", { name: "Decifrar" })).toBeNull();
     expect(screen.getByText(/Um hash não pode ser desfeito/)).toBeInTheDocument();
@@ -119,18 +147,18 @@ describe("CryptoPlayground", () => {
     render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("Base64"));
     typeText("olá");
-    encrypt();
+    encrypt("Codificar");
     expect(await valueOf("Resultado")).toHaveTextContent("b2zDoQ==");
     fireEvent.click(algorithmButton("SHA-256"));
     expect(screen.queryByText("Resultado")).toBeNull();
-    expect(screen.getByLabelText("Texto para encriptar")).toHaveValue("olá");
+    expect(screen.getByLabelText("Texto")).toHaveValue("olá");
   });
 
   it("announces the result", async () => {
     render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("Base64"));
     typeText("olá");
-    encrypt();
+    encrypt("Codificar");
     const term = await screen.findByText("Resultado", { selector: "dt" });
     expect(term.closest("[aria-live]")).toHaveAttribute("aria-live", "polite");
   });
@@ -139,7 +167,7 @@ describe("CryptoPlayground", () => {
     render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("Base64"));
     typeText("olá");
-    encrypt();
+    encrypt("Codificar");
     await valueOf("Resultado");
     expect(createNote).not.toHaveBeenCalled();
   });
@@ -183,5 +211,79 @@ describe("CryptoPlayground", () => {
     const { container } = render(<CryptoPlayground />);
     fireEvent.click(algorithmButton("RSA-OAEP"));
     expect(container.textContent).toContain("PSS");
+  });
+
+  it("groups the buttons by category", () => {
+    render(<CryptoPlayground />);
+    const outer = within(screen.getByRole("group", { name: "Algoritmos" }));
+    const groups = outer.getAllByRole("group");
+    expect(groups.map((g) => g.getAttribute("aria-label"))).toEqual(CATEGORIES.map(([name]) => name));
+    for (const [i, [name, members]] of CATEGORIES.entries()) {
+      expect(
+        within(groups[i])
+          .getAllByRole("button")
+          .map((b) => b.textContent),
+        name,
+      ).toEqual(members);
+    }
+  });
+
+  it("labels the action by type", () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("ECDSA"));
+    expect(screen.getByRole("button", { name: "Assinar" })).toBeInTheDocument();
+    fireEvent.click(algorithmButton("HMAC-SHA-256"));
+    expect(screen.getByRole("button", { name: "Gerar código" })).toBeInTheDocument();
+    fireEvent.click(algorithmButton("PBKDF2"));
+    expect(screen.getByRole("button", { name: "Derivar chave" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Senha")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Texto")).toBeNull();
+  });
+
+  it("verifies a changed text as invalid", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("HMAC-SHA-256"));
+    typeText("segredo");
+    encrypt("Gerar código");
+    await valueOf("Resultado");
+    const box = screen.getByLabelText("Texto para verificar");
+    expect(box).toHaveValue("segredo");
+    fireEvent.click(screen.getByRole("button", { name: "Verificar" }));
+    expect(await screen.findByText("Válido: o texto confere com o resultado.")).toBeInTheDocument();
+    fireEvent.change(box, { target: { value: "segredO" } });
+    fireEvent.click(screen.getByRole("button", { name: "Verificar" }));
+    expect(await screen.findByText("Inválido: o texto não confere com o resultado.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Decifrar" })).toBeNull();
+  });
+
+  it("shows the same ECDH secret on both sides", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("ECDH"));
+    typeText("segredo");
+    encrypt();
+    const ana = await valueOf("Segredo calculado por Ana");
+    const beto = await valueOf("Segredo calculado por Beto");
+    expect(ana.textContent).toBe(beto.textContent);
+    fireEvent.click(screen.getByRole("button", { name: "Decifrar" }));
+    expect(await valueOf("Texto decifrado")).toHaveTextContent("segredo");
+  });
+
+  it("shows the unsupported message", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("Ed25519"));
+    typeText("segredo");
+    encrypt("Assinar");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Seu navegador não permite este algoritmo.");
+    expect(screen.queryByText("Resultado")).toBeNull();
+  });
+
+  it("decodes Base64", async () => {
+    render(<CryptoPlayground />);
+    fireEvent.click(algorithmButton("Base64"));
+    typeText("olá");
+    encrypt("Codificar");
+    await valueOf("Resultado");
+    fireEvent.click(screen.getByRole("button", { name: "Decodificar" }));
+    expect(await valueOf("Texto decodificado")).toHaveTextContent("olá");
   });
 });

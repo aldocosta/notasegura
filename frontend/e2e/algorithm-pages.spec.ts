@@ -2,9 +2,20 @@ import { test, expect, type Page } from "@playwright/test";
 
 const ALGORITHMS: Array<[string, string]> = [
   ["aes-gcm", "AES-256-GCM"],
+  ["chacha20-poly1305", "ChaCha20-Poly1305"],
   ["aes-cbc", "AES-256-CBC"],
+  ["aes-ctr", "AES-256-CTR"],
   ["rsa-oaep", "RSA-OAEP"],
   ["sha-256", "SHA-256"],
+  ["sha-512", "SHA-512"],
+  ["sha-1", "SHA-1"],
+  ["md5", "MD5"],
+  ["hmac-sha-256", "HMAC-SHA-256"],
+  ["ecdsa", "ECDSA"],
+  ["ed25519", "Ed25519"],
+  ["rsa-pss", "RSA-PSS"],
+  ["ecdh", "ECDH"],
+  ["pbkdf2", "PBKDF2"],
   ["base64", "Base64"],
   ["cesar", "Cifra de César"],
   ["vigenere", "Cifra de Vigenère"],
@@ -99,8 +110,8 @@ test("playground opens the article of the selected algorithm", async ({ page }) 
 
 test("playground works on an article", async ({ page }) => {
   await page.goto("/algoritmos/base64");
-  await card(page).getByLabel("Texto para encriptar").fill("olá");
-  await card(page).getByRole("button", { name: "Encriptar" }).click();
+  await card(page).getByLabel("Texto", { exact: true }).fill("olá");
+  await card(page).getByRole("button", { name: "Codificar" }).click();
   await expect(card(page).locator('dt:text-is("Resultado") + dd')).toHaveText("b2zDoQ==");
 });
 

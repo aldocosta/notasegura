@@ -6,6 +6,11 @@ describe("validateInput", () => {
     expect(typeof validateInput("aes-gcm", "", {})).toBe("string");
   });
 
+  it("asks for a password for PBKDF2", () => {
+    expect(validateInput("pbkdf2", "", {})).toBe("Escreva uma senha.");
+    expect(validateInput("sha-1", "", {})).toBe("Escreva um texto.");
+  });
+
   it("rejects text over 500 characters", () => {
     expect(typeof validateInput("aes-gcm", "a".repeat(501), {})).toBe("string");
     expect(validateInput("aes-gcm", "a".repeat(500), {})).toBeNull();
