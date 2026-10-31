@@ -53,9 +53,9 @@ export default function SobrePage() {
           página que exibe uma nota.
         </p>
         <p>
-          Saiba como tratamos os dados na <TextLink href="/privacidade">Política de Privacidade</TextLink>, leia os{" "}
-          <TextLink href="/termos">Termos de Uso</TextLink> ou fale conosco pela página de{" "}
-          <TextLink href="/contato">Contato</TextLink>.
+          Saiba como tratamos os dados e quais são as regras de uso na{" "}
+          <TextLink href="/privacidade">Política de Privacidade e Termos de Uso</TextLink>, ou fale conosco pela página
+          de <TextLink href="/contato">Contato</TextLink>.
         </p>
       </TrustSection>
     </TrustPage>

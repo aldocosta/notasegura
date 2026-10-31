@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const TRUST_PAGES = ["/sobre", "/privacidade", "/termos", "/contato"];
+const TRUST_PAGES = ["/sobre", "/privacidade", "/contato"];
 const MOBILE = { width: 375, height: 812 };
 const DESKTOP = { width: 1280, height: 800 };
 

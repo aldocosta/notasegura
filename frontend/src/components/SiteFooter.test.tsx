@@ -7,17 +7,19 @@ afterEach(() => {
 });
 
 describe("SiteFooter", () => {
-  it("links to the four trust pages", () => {
+  it("links to the three trust pages", () => {
     render(<SiteFooter />);
     const expected: Array<[string, string]> = [
       ["Sobre", "/sobre"],
-      ["Privacidade", "/privacidade"],
-      ["Termos", "/termos"],
+      ["Privacidade e Termos", "/privacidade"],
       ["Contato", "/contato"],
     ];
     for (const [name, href] of expected) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
     }
+    expect(screen.queryByRole("link", { name: "Termos" })).toBeNull();
+    const hrefs = screen.getAllByRole("link").map((link) => link.getAttribute("href"));
+    expect(hrefs).not.toContain("/termos");
   });
 
   it("shows the current year", () => {

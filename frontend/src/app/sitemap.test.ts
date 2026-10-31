@@ -16,9 +16,11 @@ describe("sitemap", () => {
       "https://notasegura.example",
       "https://notasegura.example/sobre",
       "https://notasegura.example/privacidade",
-      "https://notasegura.example/termos",
       "https://notasegura.example/contato",
     ]);
+    for (const entry of sitemap()) {
+      expect(entry.url).not.toContain("/termos");
+    }
   });
 
   it("lists no note URL", () => {
