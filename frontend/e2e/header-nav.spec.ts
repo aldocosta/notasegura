@@ -3,6 +3,7 @@ import { test, expect, type Page } from "@playwright/test";
 const DESKTOP = { width: 1280, height: 800 };
 const MOBILE = { width: 375, height: 812 };
 const NAV_LINKS: Array<[string, string]> = [
+  ["Algoritmos", "/algoritmos"],
   ["Sobre", "/sobre"],
   ["Privacidade e Termos", "/privacidade"],
   ["Contato", "/contato"],

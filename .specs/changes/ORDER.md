@@ -1,6 +1,6 @@
 # Change Order
 
-Last reviewed: 2026-10-30 (`frontend-crypto-playground` proposed)
+Last reviewed: 2026-10-30 (`frontend-algorithm-pages` proposed)
 
 This file lists the active changes whose order matters, and why.
 Refer to a change by its directory name, never by its position in a list.
@@ -18,8 +18,15 @@ Delete this file when the remaining changes can apply and sync in any order.
 | `frontend-brand-and-trust-visuals` | `frontend-header-nav` applied |
 | `note-limits-30-days-50-views` | (none) |
 | `frontend-unify-privacy-terms` | `frontend-brand-and-trust-visuals` applied, `note-limits-30-days-50-views` applied |
+| `frontend-crypto-playground` | (none) |
+| `frontend-algorithm-pages` | `frontend-crypto-playground` applied, `frontend-unify-privacy-terms` applied |
 
 ## Reasons
+
+### `frontend-algorithm-pages`
+
+- **After `frontend-crypto-playground` (capability):** the pages reuse `ALGORITHMS` and `CryptoPlayground`, and this change edits the playground and its tests.
+- **After `frontend-unify-privacy-terms` (rework):** this change edits `NAV_LINKS`, `sitemap.ts`, and the menu and sitemap tests in the state that `frontend-unify-privacy-terms` leaves them. In the other order, the menu would still list "Termos" and the sitemap `/termos`.
 
 ### `frontend-unify-privacy-terms`
 
@@ -49,9 +56,9 @@ Delete this file when the remaining changes can apply and sync in any order.
 
 - `frontend`: `Trust pages`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
 - `frontend`: `Site navigation`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
-- `frontend`: `Sitemap`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`.
-- `frontend`: `Main menu in the header`: `frontend-header-nav`, `frontend-unify-privacy-terms`.
-- `frontend`: `Responsive main menu`: `frontend-header-nav`, `frontend-unify-privacy-terms`.
+- `frontend`: `Sitemap`: `frontend-adsense-readiness`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
+- `frontend`: `Main menu in the header`: `frontend-header-nav`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
+- `frontend`: `Responsive main menu`: `frontend-header-nav`, `frontend-unify-privacy-terms`, `frontend-algorithm-pages`.
 - `frontend`: `Trust page layout`: `frontend-brand-and-trust-visuals`, `frontend-unify-privacy-terms`.
 
 ## Not scheduled
@@ -67,4 +74,3 @@ Delete this file when the remaining changes can apply and sync in any order.
 - `frontend-feature`
 - `backend-invalid-note-id`
 - `rate-limit-configurable`
-- `frontend-crypto-playground`

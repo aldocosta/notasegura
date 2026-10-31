@@ -28,6 +28,8 @@ Build-time values: Next.js inlines `NEXT_PUBLIC_*` variables during `next build`
 | `NEXT_PUBLIC_ADSENSE_CLIENT` | AdSense client ID (`ca-pub-` + 16 digits). Enables the AdSense script and `google-adsense-account` meta on `(site)` pages and serves `/ads.txt`. Invalid or empty disables both. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Contact email shown as a `mailto:` link on `/contato`. Empty hides the link. |
 
+Algorithm articles (`/algoritmos/<id>`) live as data in `src/lib/algorithms/articles/`, one file per playground algorithm; `src/lib/algorithms/index.test.ts` enforces their sections, length, and required facts.
+
 AdSense code only loads in `src/app/(site)/layout.tsx`; the note page (`/n/[id]`) and the 404 page stay outside that group and must never load it.
 
 <!-- BEGIN:nextjs-agent-rules -->

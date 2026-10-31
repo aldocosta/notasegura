@@ -10,7 +10,9 @@ export const TRUST_PAGES = [
   { href: "/contato", label: "Contato" },
 ] as const;
 
-export const NAV_LINKS = [...TRUST_PAGES] as const;
+export const ALGORITHMS_PATH = "/algoritmos";
+
+export const NAV_LINKS = [{ href: ALGORITHMS_PATH, label: "Algoritmos" }, ...TRUST_PAGES] as const;
 
 export function getSiteUrl(): string {
   const url = process.env.NEXT_PUBLIC_SITE_URL?.trim();

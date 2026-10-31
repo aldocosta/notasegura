@@ -34,7 +34,7 @@ export const ALGORITHMS: Algorithm[] = [
     kind: "Criptografia assimétrica",
     safety: "Seguro",
     summary: [
-      "Criptografia assimétrica: a chave pública cifra e só a chave privada decifra. É usada para trocar chaves e assinar dados, e só cifra textos curtos.",
+      "Criptografia assimétrica: a chave pública cifra e só a chave privada decifra. É usada para proteger chaves curtas, como uma chave AES, e só cifra textos curtos. Para assinar dados, o RSA usa outro preenchimento, o PSS.",
     ],
     encrypt: rsaOaep.encrypt,
   },
