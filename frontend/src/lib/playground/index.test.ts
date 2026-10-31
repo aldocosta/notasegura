@@ -2,12 +2,23 @@ import { describe, expect, it } from "vitest";
 import { ALGORITHMS } from "./index";
 
 describe("ALGORITHMS", () => {
-  it("lists the seven algorithms in order", () => {
+  it("lists the eighteen algorithms in order", () => {
     expect(ALGORITHMS.map((a) => a.name)).toEqual([
       "AES-256-GCM",
+      "ChaCha20-Poly1305",
       "AES-256-CBC",
+      "AES-256-CTR",
       "RSA-OAEP",
       "SHA-256",
+      "SHA-512",
+      "SHA-1",
+      "MD5",
+      "HMAC-SHA-256",
+      "ECDSA",
+      "Ed25519",
+      "RSA-PSS",
+      "ECDH",
+      "PBKDF2",
       "Base64",
       "Cifra de César",
       "Cifra de Vigenère",
@@ -17,9 +28,20 @@ describe("ALGORITHMS", () => {
   it("sets type and safety", () => {
     expect(ALGORITHMS.map((a) => [a.name, a.kind, a.safety])).toEqual([
       ["AES-256-GCM", "Criptografia simétrica", "Seguro"],
+      ["ChaCha20-Poly1305", "Criptografia simétrica", "Seguro"],
       ["AES-256-CBC", "Criptografia simétrica", "Seguro"],
+      ["AES-256-CTR", "Criptografia simétrica", "Seguro"],
       ["RSA-OAEP", "Criptografia assimétrica", "Seguro"],
       ["SHA-256", "Hash", "Não é criptografia"],
+      ["SHA-512", "Hash", "Não é criptografia"],
+      ["SHA-1", "Hash", "Inseguro"],
+      ["MD5", "Hash", "Inseguro"],
+      ["HMAC-SHA-256", "Autenticação de mensagem", "Seguro"],
+      ["ECDSA", "Assinatura digital", "Seguro"],
+      ["Ed25519", "Assinatura digital", "Seguro"],
+      ["RSA-PSS", "Assinatura digital", "Seguro"],
+      ["ECDH", "Troca de chaves", "Seguro"],
+      ["PBKDF2", "Derivação de chave", "Seguro"],
       ["Base64", "Codificação", "Não é criptografia"],
       ["Cifra de César", "Cifra clássica", "Inseguro"],
       ["Cifra de Vigenère", "Cifra clássica", "Inseguro"],
